@@ -7,7 +7,7 @@
         },
         "transform": {
             "react":{
-                "pragma": "shineElement",
+                "pragma": "createElement",
                 "pragmaFrag": "wrapper"
             }
         }
