@@ -1,0 +1,19 @@
+{
+  "name": "compilation_test_jsx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx swc ./src/App.jsx -o ./dist/App.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.5.5"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0"
+  }
+}

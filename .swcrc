@@ -1,0 +1,20 @@
+{
+    "jsc": {
+        "parser": {
+            "syntax": "ecmascript",
+            "jsx": true,
+            "decorators": true
+        },
+        "transform": {
+            "react":{
+                "pragma": "shineElement",
+                "pragmaFrag": "wrapper"
+            }
+        }
+        ,
+        "target": "ES2022"
+    },
+    "module": {
+        "type": "es6"
+    }
+}
