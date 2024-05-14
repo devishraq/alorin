@@ -119,29 +119,31 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"../dist/App.js":[function(require,module,exports) {
 var createElement = function createElement(tag, props) {
-  var elem = document.createElement(tag);
+  var element = document.createElement(tag);
+  var fragment = document.createDocumentFragment();
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
-  for (var _i = 0, _childrens = childrens; _i < _childrens.length; _i++) {
-    var node = _childrens[_i];
+  childrens.forEach(function (node) {
     if (typeof node == "string") {
       var textNode = document.createTextNode(node);
-      elem.appendChild(textNode);
+      fragment.appendChild(textNode);
     } else {
-      elem.appendChild(node);
+      fragment.appendChild(node);
     }
-  }
+  });
+  element.appendChild(fragment);
   return elem;
 };
 var App = function App() {
-  return createElement("h1", {
+  return /*#__PURE__*/createElement("h1", {
     className: "text-1",
     style: {
       opacity: 1
     }
-  }, 'Hello, world');
+  }, "Hello, Developers");
 };
+// export default App;
 console.log(App());
 },{}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
