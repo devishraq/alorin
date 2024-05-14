@@ -10,7 +10,14 @@ const createElement = (tag, props, ...childrens)=>{
         }
     });
     element.appendChild(fragment);
-    return elem;
+    return element;
+};
+const wrapper = (...childrens)=>{
+    const fragment = document.createDocumentFragment();
+    childrens.forEach((node)=>{
+        fragment.appendChild(node);
+    });
+    return fragment;
 };
 const App = ()=>{
     return /*#__PURE__*/ createElement("h1", {

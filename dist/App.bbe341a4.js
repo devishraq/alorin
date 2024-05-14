@@ -133,7 +133,17 @@ var createElement = function createElement(tag, props) {
     }
   });
   element.appendChild(fragment);
-  return elem;
+  return element;
+};
+var wrapper = function wrapper() {
+  var fragment = document.createDocumentFragment();
+  for (var _len2 = arguments.length, childrens = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    childrens[_key2] = arguments[_key2];
+  }
+  childrens.forEach(function (node) {
+    fragment.appendChild(node);
+  });
+  return fragment;
 };
 var App = function App() {
   return /*#__PURE__*/createElement("h1", {
@@ -170,7 +180,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62588" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59182" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
