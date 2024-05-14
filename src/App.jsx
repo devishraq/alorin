@@ -1,11 +1,12 @@
-const string = "hello, World!"
+ 
 const App = ()=>{
     return (
         <>
+        {/* fuck you bitch */}
             <div>
-                <h2>Hello, World!</h2>
-                <p>{120-23/23}</p>
-            </div>
+              <h1>Hello, Devs</h1>
+              <h2>Hello, devs</h2>
+            </div> 
         </>
     )
 }

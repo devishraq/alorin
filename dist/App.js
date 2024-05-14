@@ -1,6 +1,5 @@
-const string = "hello, World!";
 const App = ()=>{
-    return /*#__PURE__*/ shineElement(wrapper, null, /*#__PURE__*/ shineElement("div", null, /*#__PURE__*/ shineElement("h2", null, "Hello, World!"), /*#__PURE__*/ shineElement("p", null, 120 - 23 / 23)));
+    return /*#__PURE__*/ shineElement(wrapper, null, /*#__PURE__*/ shineElement("div", null, /*#__PURE__*/ shineElement("h1", null, "Hello, Devs"), /*#__PURE__*/ shineElement("h2", null, "Hello, devs")));
 };
 export default App;
 
