@@ -7,8 +7,8 @@
         },
         "transform": {
             "react":{
-                "pragma": "createElement",
-                "pragmaFrag": "wrapper"
+                "pragma": "temp.createElement",
+                "pragmaFrag": "temp.wrapper"
             }
         }
         ,
