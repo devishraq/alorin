@@ -23,16 +23,16 @@ const wrapper = (...childrens) => {
   return fragment;
 };
 
+const part = 'World!'
+
 const App = () => {
   return (
  
       <h1 className="text-1" style={{ opacity: 1 }}>
-        Hello, Developers
+        Hello, <span>{part}</span>
       </h1>
    
   );
 };
 
-// export default App;
-
-console.log(App());
+export default App;
