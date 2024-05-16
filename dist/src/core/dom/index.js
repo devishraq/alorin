@@ -1,2 +1,2 @@
-export * from './createElement';
-export * from './wrapper';
+export { createElement } from './createElement';
+export { wrapper } from './wrapper';
