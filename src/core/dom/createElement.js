@@ -1,4 +1,4 @@
-export const createElement = (tag, props, ...childrens) => {
+export default createElement = (tag, props, ...childrens) => {
   const element = document.createElement(tag);
   const fragment = document.createDocumentFragment();
 

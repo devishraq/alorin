@@ -1,1 +1,1 @@
-export * from './dom'
+export * as olka from './dom'

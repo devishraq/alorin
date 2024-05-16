@@ -124,7 +124,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var createElement = function createElement(tag, props) {
+var _default = exports.default = createElement = function createElement(tag, props) {
   var element = document.createElement(tag);
   var fragment = document.createDocumentFragment();
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -140,10 +140,15 @@ var createElement = function createElement(tag, props) {
   });
   element.appendChild(fragment);
   return element;
-};
-var _default = exports.default = createElement();
+}; // export default createElement;
 },{}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
-var wrapper = function wrapper() {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = exports.default = wrapper = function wrapper() {
   var fragment = document.createDocumentFragment();
   for (var _len = arguments.length, childrens = new Array(_len), _key = 0; _key < _len; _key++) {
     childrens[_key] = arguments[_key];
@@ -187,35 +192,35 @@ Object.keys(_wrapper).forEach(function (key) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var _index = require("./dom/index");
-Object.keys(_index).forEach(function (key) {
+var _dom = require("./dom");
+Object.keys(_dom).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
-  if (key in exports && exports[key] === _index[key]) return;
+  if (key in exports && exports[key] === _dom[key]) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function () {
-      return _index[key];
+      return _dom[key];
     }
   });
 });
-},{"./dom/index":"../dist/src/core/dom/index.js"}],"../dist/src/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js"}],"../dist/src/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var temp = _interopRequireWildcard(require("./core"));
+var alka = _interopRequireWildcard(require("./core"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 var part = 'World!';
 var App = function App() {
-  return /*#__PURE__*/temp.createElement("h1", {
+  return /*#__PURE__*/createElement("h1", {
     className: "text-1",
     style: {
       opacity: 1
     }
-  }, "Hello, ", /*#__PURE__*/temp.createElement("span", null, part));
+  }, "Hello, ", /*#__PURE__*/createElement("span", null, part));
 };
 var _default = exports.default = App;
 },{"./core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
@@ -250,7 +255,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53725" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53179" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
