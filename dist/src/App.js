@@ -1,11 +1,5 @@
-import * as alka from './core';
-const part = 'World!';
+import { olka } from './core';
 const App = ()=>{
-    return /*#__PURE__*/ createElement("h1", {
-        className: "text-1",
-        style: {
-            opacity: 1
-        }
-    }, "Hello, ", /*#__PURE__*/ createElement("span", null, part));
+    return /*#__PURE__*/ olka.createElement("h1", null, "Hello, ", 2 == 2 ? 'devs' : 'noppy');
 };
 export default App;

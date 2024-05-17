@@ -4,16 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx swc ./src/App.jsx -o ./dist/App.js"
+    "dev": "npm run build:swc && parcel serve ./public/index.html ./dist",
+    "build:swc": "swc ./src -d ./dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.5.5"
-  },
-  "dependencies": {
-    "chokidar": "^3.6.0"
+    "@swc/core": "^1.5.7",
+    "@swc/helpers": "^0.5.11",
+    "parcel": "^1.12.4"
   }
 }

@@ -123,8 +123,8 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
-var _default = exports.default = createElement = function createElement(tag, props) {
+exports.createElement = void 0;
+var createElement = exports.createElement = function createElement(tag, props) {
   var element = document.createElement(tag);
   var fragment = document.createDocumentFragment();
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -147,8 +147,8 @@ var _default = exports.default = createElement = function createElement(tag, pro
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
-var _default = exports.default = wrapper = function wrapper() {
+exports.wrapper = void 0;
+var wrapper = exports.wrapper = function wrapper() {
   var fragment = document.createDocumentFragment();
   for (var _len = arguments.length, childrens = new Array(_len), _key = 0; _key < _len; _key++) {
     childrens[_key] = arguments[_key];
@@ -164,45 +164,31 @@ var _default = exports.default = wrapper = function wrapper() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+Object.defineProperty(exports, "createElement", {
+  enumerable: true,
+  get: function () {
+    return _createElement.createElement;
+  }
+});
+Object.defineProperty(exports, "wrapper", {
+  enumerable: true,
+  get: function () {
+    return _wrapper.wrapper;
+  }
+});
 var _createElement = require("./createElement");
-Object.keys(_createElement).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (key in exports && exports[key] === _createElement[key]) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function () {
-      return _createElement[key];
-    }
-  });
-});
 var _wrapper = require("./wrapper");
-Object.keys(_wrapper).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (key in exports && exports[key] === _wrapper[key]) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function () {
-      return _wrapper[key];
-    }
-  });
-});
 },{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js"}],"../dist/src/core/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var _dom = require("./dom");
-Object.keys(_dom).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (key in exports && exports[key] === _dom[key]) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function () {
-      return _dom[key];
-    }
-  });
-});
+exports.olka = void 0;
+var _olka = _interopRequireWildcard(require("./dom"));
+exports.olka = _olka;
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 },{"./dom":"../dist/src/core/dom/index.js"}],"../dist/src/App.js":[function(require,module,exports) {
 "use strict";
 
@@ -210,17 +196,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var alka = _interopRequireWildcard(require("./core"));
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-var part = 'World!';
+var _core = require("./core");
 var App = function App() {
-  return /*#__PURE__*/createElement("h1", {
-    className: "text-1",
-    style: {
-      opacity: 1
-    }
-  }, "Hello, ", /*#__PURE__*/createElement("span", null, part));
+  return /*#__PURE__*/_core.olka.createElement("h1", null, "Hello, ", 2 == 2 ? 'devs' : 'noppy');
 };
 var _default = exports.default = App;
 },{"./core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
@@ -255,7 +233,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53179" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52275" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

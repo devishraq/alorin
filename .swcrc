@@ -7,8 +7,8 @@
         },
         "transform": {
             "react":{
-                "pragma": "createElement",
-                "pragmaFrag": "wrapper"
+                "pragma": "olka.createElement",
+                "pragmaFrag": "olka.wrapper"
             }
         }
         ,
