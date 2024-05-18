@@ -17,8 +17,9 @@
             }
         }
         ,
-        "target": "ES2022"
-    },
+        "target": "es2016",
+        "preserveAllComments": false
+     },
     "module": {
         "type": "es6"
     }

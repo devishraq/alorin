@@ -1,4 +1,3 @@
-
 /**
  * Creates a new *Olka* element with the given tag and children.
  *
@@ -22,16 +21,20 @@ export const createElement = (tag, props, ...childrens) => {
   if (typeof tag === "function") {
     // Call the function to get the element it returns
     element = tag(props, ...childrens);
- 
   } else {
     // Otherwise, create a new element with the given tag
     element = document.createElement(tag);
-    if(props !== null){
-      element.setAttribute('class', props.className);
-      Object.assign(element.style, props.style);
+
+    // If the props object is provided, set the properties on the element.
+    if (props != null) {
+      // 
+      for (const attribute in props) {
+        attribute === "style"
+          ? Object.assign(element.style, props.style)
+          : element.setAttribute(attribute, props[attribute]);
+      }
     }
   }
-
   // Iterate over each child node.
   childrens.forEach((node) => {
     // If the node is a string, create a text node and append it to the fragment.
@@ -39,7 +42,7 @@ export const createElement = (tag, props, ...childrens) => {
       childNode = document.createTextNode(node);
       fragment.appendChild(childNode);
     }
-     
+
     // If the node is neither a string nor a function, append it directly to the fragment.
     else {
       fragment.appendChild(node);
@@ -50,5 +53,3 @@ export const createElement = (tag, props, ...childrens) => {
   element.appendChild(fragment);
   return element;
 };
-
- 

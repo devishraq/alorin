@@ -1,1 +1,1 @@
-export*as olka from"./dom";
+import*as _olka from"./dom";export{_olka as olka};
