@@ -1,0 +1,1 @@
+import{olka}from"../../core";export default(()=>olka.createElement("h1",null,"My Title"));

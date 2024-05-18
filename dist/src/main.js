@@ -1,3 +1,1 @@
-import App from "./App";
-const rootDOM = document.querySelector('#root');
-rootDOM.appendChild(App());
+import App from"./test/component/App";import{olka}from"./core";document.querySelector("#root").appendChild(olka.createElement(App,null));
