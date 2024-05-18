@@ -1,3 +1,4 @@
+
 /**
  * Creates a new *Olka* element with the given tag and children.
  *
@@ -6,6 +7,7 @@
  * @param {...Node} childrens - The children to append to the element.
  * @returns {Node} The newly created element.
  */
+
 export const createElement = (tag, props, ...childrens) => {
   // Create a new document fragment.
   // This is used to efficiently append multiple children to the element.
@@ -13,6 +15,8 @@ export const createElement = (tag, props, ...childrens) => {
 
   // Declare a variable to hold the child node & the element.
   let element, childNode;
+  // If the props object is not provided, set it to an empty object.
+  // let _props = props || {};
 
   // Check if the tag is a function (i.e., a component)
   if (typeof tag === "function") {
@@ -22,6 +26,10 @@ export const createElement = (tag, props, ...childrens) => {
   } else {
     // Otherwise, create a new element with the given tag
     element = document.createElement(tag);
+    if(props !== null){
+      element.setAttribute('class', props.className);
+      Object.assign(element.style, props.style);
+    }
   }
 
   // Iterate over each child node.
