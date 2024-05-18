@@ -84,7 +84,7 @@ web_modules/
 .cache
 .parcel-cache
 
-.dist/
+.dist
  
 
 # Gatsby files
