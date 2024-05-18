@@ -1,1 +1,0 @@
-import{olka}from"../../core";import"./Title";import"./SubTitle";export default(()=>olka.createElement("h1",{className:"Hello, World!",style:{fontSize:"20px",color:"red"}},"Hello, World!"));

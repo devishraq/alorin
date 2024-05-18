@@ -1,1 +1,0 @@
-import{olka}from"../../core";export default(()=>olka.createElement("h2",null,"SubTitle"));
