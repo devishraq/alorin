@@ -1,14 +1,1 @@
-export const createElement = (tag, props, ...childrens)=>{
-    const element = document.createElement(tag);
-    const fragment = document.createDocumentFragment();
-    childrens.forEach((node)=>{
-        if (typeof node == "string") {
-            let textNode = document.createTextNode(node);
-            fragment.appendChild(textNode);
-        } else {
-            fragment.appendChild(node);
-        }
-    });
-    element.appendChild(fragment);
-    return element;
-}; // export default createElement;
+export const createElement=(tag,props,...childrens)=>{let element,childNode;let fragment=document.createDocumentFragment();return element="function"==typeof tag?tag(props,...childrens):document.createElement(tag),childrens.forEach(node=>{"string"==typeof node?(childNode=document.createTextNode(node),fragment.appendChild(childNode)):fragment.appendChild(node)}),element.appendChild(fragment),element};
