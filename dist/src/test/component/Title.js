@@ -1,0 +1,1 @@
+import{olka}from"../../core";export default(({txt="Hello, world!"})=>olka.createElement("h1",null,txt));

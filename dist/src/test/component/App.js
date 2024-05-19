@@ -1,0 +1,1 @@
+import{olka}from"../../core";import"./Title";import"./SubTitle";let data=["title 1","title 2","title 3","title 4","title 5"];export default(()=>olka.createElement("div",null,data.map((item,index)=>{console.log(index)})));

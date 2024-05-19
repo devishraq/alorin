@@ -37,15 +37,15 @@ export const createElement = (tag, props, ...childrens) => {
   }
   // Iterate over each child node.
   childrens.forEach((node) => {
-    // If the node is a string, create a text node and append it to the fragment.
-    if (typeof node === "string") {
-      childNode = document.createTextNode(node);
-      fragment.appendChild(childNode);
+    // If the node is not a object nor a function, append it directly to the fragment. 
+    if (typeof node === "object") {
+      fragment.appendChild(node);
     }
 
-    // If the node is neither a string nor a function, append it directly to the fragment.
+    // If the node is neither a object nor a function, create a text node and append it to the fragment.
     else {
-      fragment.appendChild(node);
+      childNode = document.createTextNode(node);
+      fragment.appendChild(childNode);
     }
   });
 
