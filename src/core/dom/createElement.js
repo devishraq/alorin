@@ -20,9 +20,13 @@ export const createElement = (tag, props, ...childrens) => {
 	// Generate a unique ID for the element.
 	let element_id = nanoid(15);
 
+
+	// If the props object is not provided, set it to an empty object.
+	let _props = props || {};
+
 	// Check if the tag is a function (i.e., a component), call it. Otherwise, create a new element with the tag name.
 	if (typeof tag === "function") {
-		element = tag(props, ...childrens);
+		element = tag(_props, ...childrens);
 	} else {
 		element = document.createElement(tag);
 
@@ -30,12 +34,12 @@ export const createElement = (tag, props, ...childrens) => {
 		element.setAttribute("data-key", element_id);
 
 		// If the props object is provided, set the properties on the element.
-		if (props != null) {
-			for (const attribute in props) {
+		if (_props != null) {
+			for (const attribute in _props) {
 				// If the attribute is "style", merge the styles. Otherwise, set the attribute.
 				attribute === "style"
-					? Object.assign(element.style, props.style)
-					: element.setAttribute(attribute, props[attribute]);
+					? Object.assign(element.style, _props.style)
+					: element.setAttribute(attribute, _props[attribute]);
 			}
 		}
 	}
