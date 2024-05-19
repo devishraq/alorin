@@ -189,7 +189,9 @@ var createElement = exports.createElement = function createElement(tag, props) {
   }
   if ("function" == typeof tag) element = tag.apply(void 0, [props].concat(childrens));else if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != props) for (var attribute in props) "style" === attribute ? Object.assign(element.style, props.style) : element.setAttribute(attribute, props[attribute]);
   return childrens.forEach(function (node) {
-    "object" == _typeof(node) ? fragment.appendChild(node) : (childNode = document.createTextNode(node), fragment.appendChild(childNode));
+    Array.isArray(node) ? node.forEach(function (child) {
+      "object" == _typeof(child) ? fragment.appendChild(child) : (childNode = document.createTextNode(child), fragment.appendChild(childNode));
+    }) : "object" == _typeof(node) ? fragment.appendChild(node) : (childNode = document.createTextNode(node), fragment.appendChild(childNode));
   }), element.appendChild(fragment), element;
 };
 },{"nanoid":"../node_modules/nanoid/index.browser.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
@@ -266,12 +268,19 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _core = require("../../core");
 var _Title = _interopRequireDefault(require("./Title"));
-require("./SubTitle");
+var _SubTitle = _interopRequireDefault(require("./SubTitle"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var data = ["title 1", "title 2", "title 3", "title 4", "title 5"];
 var _default = exports.default = function _default() {
-  return _core.olka.createElement("div", null, _core.olka.createElement(_Title.default, {
-    txt: "This is Ishraq"
-  }), _core.olka.createElement("span", null, "THIS IS REALLY HOT!"), _core.olka.createElement("h3", null, "ALLAH IS ONLY ONE GOD!"));
+  return _core.olka.createElement("div", null, _core.olka.createElement("div", null, _core.olka.createElement(_Title.default, {
+    text: "Hello World"
+  }), _core.olka.createElement(_SubTitle.default, {
+    text: "This is a subtitle"
+  }), _core.olka.createElement("ul", null, data.map(function (item, index) {
+    return _core.olka.createElement("li", {
+      key: index
+    }, item);
+  }))));
 };
 },{"../../core":"../dist/src/core/index.js","./Title":"../dist/src/test/component/Title.js","./SubTitle":"../dist/src/test/component/SubTitle.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
@@ -305,7 +314,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54846" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51709" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

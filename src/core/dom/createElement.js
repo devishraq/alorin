@@ -11,53 +11,72 @@ import { nanoid } from "nanoid";
  */
 
 export const createElement = (tag, props, ...childrens) => {
-  // Create a document fragment to hold the child nodes.
-  const fragment = document.createDocumentFragment();
+	// Create a document fragment to hold the child nodes.
+	const fragment = document.createDocumentFragment();
 
-  // Declare variables for the new element and a child node.
-  let element, childNode;
+	// Declare variables for the new element and a child node.
+	let element, childNode;
 
-  // Generate a unique ID for the element.
-  let element_id = nanoid(15);
+	// Generate a unique ID for the element.
+	let element_id = nanoid(15);
 
-  // Check if the tag is a function (i.e., a component), call it. Otherwise, create a new element with the tag name.
-  if (typeof tag === "function") {
-    element = tag(props, ...childrens);
-  } else {
-    element = document.createElement(tag);
-    // Set the data-key attribute to the unique ID.
+	// Check if the tag is a function (i.e., a component), call it. Otherwise, create a new element with the tag name.
+	if (typeof tag === "function") {
+		element = tag(props, ...childrens);
+	} else {
+		element = document.createElement(tag);
 
-    element.setAttribute("data-key", element_id);
+		// Set the data-key attribute to the unique ID.
+		element.setAttribute("data-key", element_id);
 
-    // If the props object is provided, set the properties on the element.
-    if (props != null) {
-      for (const attribute in props) {
-        // If the attribute is "style", merge the styles. Otherwise, set the attribute.
+		// If the props object is provided, set the properties on the element.
+		if (props != null) {
+			for (const attribute in props) {
+				// If the attribute is "style", merge the styles. Otherwise, set the attribute.
+				attribute === "style"
+					? Object.assign(element.style, props.style)
+					: element.setAttribute(attribute, props[attribute]);
+			}
+		}
+	}
 
-        attribute === "style"
-          ? Object.assign(element.style, props.style)
-          : element.setAttribute(attribute, props[attribute]);
-      }
-    }
-  }
+	// Append each child node to the document fragment.
+	childrens.forEach((node) => {
+		//  If the node is an array, iterate over each child node and append it to the fragment.
+		if (Array.isArray(node)) {
+			node.forEach((child) => {
+				// If the node is an object (e.g., another DOM element), append it directly to the fragment.
+				if (typeof child === "object") {
+					fragment.appendChild(child);
+				}
 
-  // Append each child node to the document fragment.
-  childrens.forEach((node) => {
-    // If the node is an object (e.g., another DOM element), append it directly to the fragment.
-    if (typeof node === "object") {
-      fragment.appendChild(node);
-    }
+				// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
+				else {
+					childNode = document.createTextNode(child);
+					fragment.appendChild(childNode);
+				}
+			});
+		}
 
-    // If the node is not an object (e.g., a string), create a text node and append it to the fragment.
-    else {
-      childNode = document.createTextNode(node);
-      fragment.appendChild(childNode);
-    }
-  });
+		// If the node is an object (e.g., another DOM element), append it directly to the fragment.
+		else if (typeof node === "object") {
+			fragment.appendChild(node);
+		}
 
-  // After all child nodes have been appended to the fragment, append the fragment to the main element.
-  element.appendChild(fragment);
+		// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
+		else {
+			childNode = document.createTextNode(node);
+			fragment.appendChild(childNode);
+		}
+	});
 
-  // Return the newly created element with all its children.
-  return element;
+	// After all child nodes have been appended to the fragment, append the fragment to the main element.
+	element.appendChild(fragment);
+
+	// Return the newly created element with all its children.
+	return element;
 };
+
+
+
+// Easy Code, Huh? 😎  
