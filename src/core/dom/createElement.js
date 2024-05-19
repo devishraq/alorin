@@ -1,3 +1,6 @@
+// Import the nanoid function for generating unique data-keys.
+import { nanoid } from "nanoid";
+
 /**
  * Creates a new *Olka* element with the given tag and children.
  *
@@ -8,48 +11,53 @@
  */
 
 export const createElement = (tag, props, ...childrens) => {
-  // Create a new document fragment.
-  // This is used to efficiently append multiple children to the element.
+  // Create a document fragment to hold the child nodes.
   const fragment = document.createDocumentFragment();
 
-  // Declare a variable to hold the child node & the element.
+  // Declare variables for the new element and a child node.
   let element, childNode;
-  // If the props object is not provided, set it to an empty object.
-  // let _props = props || {};
 
-  // Check if the tag is a function (i.e., a component)
+  // Generate a unique ID for the element.
+  let element_id = nanoid(15);
+
+  // Check if the tag is a function (i.e., a component), call it. Otherwise, create a new element with the tag name.
   if (typeof tag === "function") {
-    // Call the function to get the element it returns
     element = tag(props, ...childrens);
   } else {
-    // Otherwise, create a new element with the given tag
     element = document.createElement(tag);
+    // Set the data-key attribute to the unique ID.
+
+    element.setAttribute("data-key", element_id);
 
     // If the props object is provided, set the properties on the element.
     if (props != null) {
-      // 
       for (const attribute in props) {
+        // If the attribute is "style", merge the styles. Otherwise, set the attribute.
+
         attribute === "style"
           ? Object.assign(element.style, props.style)
           : element.setAttribute(attribute, props[attribute]);
       }
     }
   }
-  // Iterate over each child node.
+
+  // Append each child node to the document fragment.
   childrens.forEach((node) => {
-    // If the node is not a object nor a function, append it directly to the fragment. 
+    // If the node is an object (e.g., another DOM element), append it directly to the fragment.
     if (typeof node === "object") {
       fragment.appendChild(node);
     }
 
-    // If the node is neither a object nor a function, create a text node and append it to the fragment.
+    // If the node is not an object (e.g., a string), create a text node and append it to the fragment.
     else {
       childNode = document.createTextNode(node);
       fragment.appendChild(childNode);
     }
   });
 
-  // Append the fragment, which contains all the child nodes, to the element & return it!
+  // After all child nodes have been appended to the fragment, append the fragment to the main element.
   element.appendChild(fragment);
+
+  // Return the newly created element with all its children.
   return element;
 };
