@@ -1,1 +1,1 @@
-import{olka}from"../../core";import"./Title";import"./SubTitle";let data=["title 1","title 2","title 3","title 4","title 5"];export default(()=>olka.createElement("div",null,data.map((item,index)=>{console.log(index)})));
+import{olka}from"../../core";import Title from"./Title";import"./SubTitle";export default(()=>olka.createElement("div",null,olka.createElement(Title,{txt:"This is Ishraq"}),olka.createElement("span",null,"THIS IS REALLY HOT!"),olka.createElement("h3",null,"ALLAH IS ONLY ONE GOD!")));

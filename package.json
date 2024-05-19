@@ -13,5 +13,8 @@
   "devDependencies": {
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.5.7"
+  },
+  "dependencies": {
+    "nanoid": "^5.0.7"
   }
 }

@@ -117,26 +117,82 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
+})({"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.urlAlphabet = void 0;
+var urlAlphabet = exports.urlAlphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
+},{}],"../node_modules/nanoid/index.browser.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.random = exports.nanoid = exports.customRandom = exports.customAlphabet = void 0;
+Object.defineProperty(exports, "urlAlphabet", {
+  enumerable: true,
+  get: function () {
+    return _index.urlAlphabet;
+  }
+});
+var _index = require("./url-alphabet/index.js");
+var random = exports.random = function random(bytes) {
+  return crypto.getRandomValues(new Uint8Array(bytes));
+};
+var customRandom = exports.customRandom = function customRandom(alphabet, defaultSize, getRandom) {
+  var mask = (2 << Math.log(alphabet.length - 1) / Math.LN2) - 1;
+  var step = -~(1.6 * mask * defaultSize / alphabet.length);
+  return function () {
+    var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSize;
+    var id = '';
+    while (true) {
+      var bytes = getRandom(step);
+      var j = step;
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || '';
+        if (id.length === size) return id;
+      }
+    }
+  };
+};
+var customAlphabet = exports.customAlphabet = function customAlphabet(alphabet) {
+  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 21;
+  return customRandom(alphabet, size, random);
+};
+var nanoid = exports.nanoid = function nanoid() {
+  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 21;
+  var id = '';
+  var bytes = crypto.getRandomValues(new Uint8Array(size));
+  while (size--) {
+    id += _index.urlAlphabet[bytes[size] & 63];
+  }
+  return id;
+};
+},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createElement = void 0;
+var _nanoid = require("nanoid");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var createElement = exports.createElement = function createElement(tag, props) {
   var element, childNode;
-  var fragment = document.createDocumentFragment();
+  var fragment = document.createDocumentFragment(),
+    element_id = (0, _nanoid.nanoid)(15);
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
-  if ("function" == typeof tag) element = tag.apply(void 0, [props].concat(childrens));else if (element = document.createElement(tag), null != props) for (var attribute in props) "style" === attribute ? Object.assign(element.style, props.style) : element.setAttribute(attribute, props[attribute]);
+  if ("function" == typeof tag) element = tag.apply(void 0, [props].concat(childrens));else if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != props) for (var attribute in props) "style" === attribute ? Object.assign(element.style, props.style) : element.setAttribute(attribute, props[attribute]);
   return childrens.forEach(function (node) {
     "object" == _typeof(node) ? fragment.appendChild(node) : (childNode = document.createTextNode(node), fragment.appendChild(childNode));
   }), element.appendChild(fragment), element;
 };
-},{}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
+},{"nanoid":"../node_modules/nanoid/index.browser.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -209,13 +265,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../../core");
-require("./Title");
+var _Title = _interopRequireDefault(require("./Title"));
 require("./SubTitle");
-var data = ["title 1", "title 2", "title 3", "title 4", "title 5"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 var _default = exports.default = function _default() {
-  return _core.olka.createElement("div", null, data.map(function (item, index) {
-    console.log(index);
-  }));
+  return _core.olka.createElement("div", null, _core.olka.createElement(_Title.default, {
+    txt: "This is Ishraq"
+  }), _core.olka.createElement("span", null, "THIS IS REALLY HOT!"), _core.olka.createElement("h3", null, "ALLAH IS ONLY ONE GOD!"));
 };
 },{"../../core":"../dist/src/core/index.js","./Title":"../dist/src/test/component/Title.js","./SubTitle":"../dist/src/test/component/SubTitle.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
@@ -249,7 +305,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49988" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54846" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
