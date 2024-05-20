@@ -1,28 +1,29 @@
 import { olka } from "../../core";
 
-import Title from "./Title";
-import SubTitle from "./SubTitle";
-const isShow = true;
+let count = 0;
 
-const data = ["title 1", "title 2", "title 3", "title 4", "title 5"];
+
+const handleClick =()=>{
+	console.log("successfully loged via click!")
+}
 const App = () => {
-  return (
-    <div>
-      {
-        isShow && (
-          <div>
-            <Title text="Hello World" />
-            <SubTitle text="This is a subtitle" />
-            <ul>
-              {data.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-    </div>
-  );
+	return (
+		<div>
+			{/* <span>
+				{count}
+			</span>
+			<button onClick={()=>{count++}}>Increment</button>
+			<button onClick={()=>{count--}}>Decrement</button> */}
+
+			<h1
+				onclick={handleClick}
+				className="txt-1"
+				style={{ color: "grey", fontSize: "30px" }}
+			>
+				Hello, World
+			</h1>
+		</div>
+	);
 };
 
 export default App;

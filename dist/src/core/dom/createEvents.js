@@ -1,0 +1,1 @@
+export const createEvents=(props,element)=>{let isEventProp=key=>key.startsWith("on"),events=Object.entries(props).filter(([key])=>isEventProp(key));console.log(events),events.forEach(([key,callbackHandler])=>{element.addEventListener(key.slice(2).toLowerCase(),callbackHandler)})};

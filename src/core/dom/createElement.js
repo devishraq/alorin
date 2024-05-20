@@ -1,7 +1,10 @@
 // Import the nanoid function for generating unique data-keys.
 import { nanoid } from "nanoid";
 
-/**
+import { createEvents } from "./createEvents";
+
+
+ /**
  * Creates a new *Olka* element with the given tag and children.
  *
  * @param {string|function} tag - The tag name of the element to create or a function that returns an element.
@@ -42,7 +45,11 @@ export const createElement = (tag, props, ...childrens) => {
 					: element.setAttribute(attribute, _props[attribute]);
 			}
 		}
+		createEvents(_props, element);
 	}
+
+ 
+
 
 	// Append each child node to the document fragment.
 	childrens.forEach((node) => {
@@ -76,7 +83,6 @@ export const createElement = (tag, props, ...childrens) => {
 
 	// After all child nodes have been appended to the fragment, append the fragment to the main element.
 	element.appendChild(fragment);
-
 	// Return the newly created element with all its children.
 	return element;
 };

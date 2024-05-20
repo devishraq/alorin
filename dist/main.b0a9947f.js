@@ -171,7 +171,36 @@ var nanoid = exports.nanoid = function nanoid() {
   }
   return id;
 };
-},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
+},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../dist/src/core/dom/createEvents.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createEvents = void 0;
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+var createEvents = exports.createEvents = function createEvents(props, element) {
+  var isEventProp = function isEventProp(key) {
+      return key.startsWith("on");
+    },
+    events = Object.entries(props).filter(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 1),
+        key = _ref2[0];
+      return isEventProp(key);
+    });
+  console.log(events), events.forEach(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+      key = _ref4[0],
+      callbackHandler = _ref4[1];
+    element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
+  });
+};
+},{}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -179,22 +208,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createElement = void 0;
 var _nanoid = require("nanoid");
+var _createEvents = require("./createEvents");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var createElement = exports.createElement = function createElement(tag, props) {
   var element, childNode;
   var fragment = document.createDocumentFragment(),
-    element_id = (0, _nanoid.nanoid)(15);
+    element_id = (0, _nanoid.nanoid)(15),
+    _props = props || {};
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
-  if ("function" == typeof tag) element = tag.apply(void 0, [props].concat(childrens));else if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != props) for (var attribute in props) "style" === attribute ? Object.assign(element.style, props.style) : element.setAttribute(attribute, props[attribute]);
+  if ("function" == typeof tag) element = tag.apply(void 0, [_props].concat(childrens));else {
+    if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != _props) for (var attribute in _props) "style" === attribute ? Object.assign(element.style, _props.style) : element.setAttribute(attribute, _props[attribute]);
+    (0, _createEvents.createEvents)(_props, element);
+  }
   return childrens.forEach(function (node) {
     Array.isArray(node) ? node.forEach(function (child) {
       "object" == _typeof(child) ? fragment.appendChild(child) : (childNode = document.createTextNode(child), fragment.appendChild(childNode));
     }) : "object" == _typeof(node) ? fragment.appendChild(node) : (childNode = document.createTextNode(node), fragment.appendChild(childNode));
   }), element.appendChild(fragment), element;
 };
-},{"nanoid":"../node_modules/nanoid/index.browser.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
+},{"nanoid":"../node_modules/nanoid/index.browser.js","./createEvents":"../dist/src/core/dom/createEvents.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -235,7 +269,7 @@ var _olka = _interopRequireWildcard(require("./dom"));
 exports.olka = _olka;
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js"}],"../dist/src/test/component/Title.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -243,46 +277,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../../core");
-var _default = exports.default = function _default(_ref) {
-  var _ref$txt = _ref.txt,
-    txt = _ref$txt === void 0 ? "Hello, world!" : _ref$txt;
-  return _core.olka.createElement("h1", null, txt);
+var handleClick = function handleClick() {
+  console.log("successfully loged via click!");
 };
-},{"../../core":"../dist/src/core/index.js"}],"../dist/src/test/component/SubTitle.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _core = require("../../core");
 var _default = exports.default = function _default() {
-  return _core.olka.createElement("h2", null, "SubTitle");
+  return _core.olka.createElement("div", null, _core.olka.createElement("h1", {
+    onclick: handleClick,
+    className: "txt-1",
+    style: {
+      color: "grey",
+      fontSize: "30px"
+    }
+  }, "Hello, World"));
 };
-},{"../../core":"../dist/src/core/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _core = require("../../core");
-var _Title = _interopRequireDefault(require("./Title"));
-var _SubTitle = _interopRequireDefault(require("./SubTitle"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-var data = ["title 1", "title 2", "title 3", "title 4", "title 5"];
-var _default = exports.default = function _default() {
-  return _core.olka.createElement("div", null, _core.olka.createElement("div", null, _core.olka.createElement(_Title.default, {
-    text: "Hello World"
-  }), _core.olka.createElement(_SubTitle.default, {
-    text: "This is a subtitle"
-  }), _core.olka.createElement("ul", null, data.map(function (item, index) {
-    return _core.olka.createElement("li", {
-      key: index
-    }, item);
-  }))));
-};
-},{"../../core":"../dist/src/core/index.js","./Title":"../dist/src/test/component/Title.js","./SubTitle":"../dist/src/test/component/SubTitle.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/component/App"));
@@ -314,7 +322,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51709" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64441" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
