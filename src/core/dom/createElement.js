@@ -3,8 +3,7 @@ import { nanoid } from "nanoid";
 
 import { createEvents } from "./createEvents";
 
-
- /**
+/**
  * Creates a new *Olka* element with the given tag and children.
  *
  * @param {string|function} tag - The tag name of the element to create or a function that returns an element.
@@ -21,8 +20,7 @@ export const createElement = (tag, props, ...childrens) => {
 	let element, childNode;
 
 	// Generate a unique ID for the element.
-	let element_id = nanoid(15);
-
+	let element_id = nanoid(5);
 
 	// If the props object is not provided, set it to an empty object.
 	let _props = props || {};
@@ -40,16 +38,19 @@ export const createElement = (tag, props, ...childrens) => {
 		if (_props != null) {
 			for (const attribute in _props) {
 				// If the attribute is "style", merge the styles. Otherwise, set the attribute.
-				attribute === "style"
-					? Object.assign(element.style, _props.style)
-					: element.setAttribute(attribute, _props[attribute]);
+				if (attribute === "style") {
+
+					// Check if the style is a string or an object. Set the CSS text or merge the styles. 
+					typeof _props.style == "string"
+						? (element.style.cssText = _props.style)
+						: Object.assign(element.style, _props.style);
+				} else {
+					element.setAttribute(attribute, _props[attribute]);
+				}
 			}
 		}
 		createEvents(_props, element);
 	}
-
- 
-
 
 	// Append each child node to the document fragment.
 	childrens.forEach((node) => {
@@ -87,6 +88,4 @@ export const createElement = (tag, props, ...childrens) => {
 	return element;
 };
 
-
-
-// Easy Code, Huh? 😎  
+// Easy Code, Huh? 😎

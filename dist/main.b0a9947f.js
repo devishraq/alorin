@@ -186,18 +186,19 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var createEvents = exports.createEvents = function createEvents(props, element) {
   var isEventProp = function isEventProp(key) {
-      return key.startsWith("on");
-    },
-    events = Object.entries(props).filter(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 1),
-        key = _ref2[0];
-      return isEventProp(key);
-    });
-  console.log(events), events.forEach(function (_ref3) {
+    return key.startsWith("on");
+  };
+  Object.entries(props).filter(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 1),
+      key = _ref2[0];
+    return isEventProp(key);
+  }).forEach(function (_ref3) {
     var _ref4 = _slicedToArray(_ref3, 2),
       key = _ref4[0],
       callbackHandler = _ref4[1];
-    element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
+    element.addEventListener(key.slice(2).toLowerCase(), function () {
+      return callbackHandler;
+    });
   });
 };
 },{}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
@@ -213,13 +214,13 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 var createElement = exports.createElement = function createElement(tag, props) {
   var element, childNode;
   var fragment = document.createDocumentFragment(),
-    element_id = (0, _nanoid.nanoid)(15),
+    element_id = (0, _nanoid.nanoid)(5),
     _props = props || {};
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
   if ("function" == typeof tag) element = tag.apply(void 0, [_props].concat(childrens));else {
-    if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != _props) for (var attribute in _props) "style" === attribute ? Object.assign(element.style, _props.style) : element.setAttribute(attribute, _props[attribute]);
+    if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != _props) for (var attribute in _props) "style" === attribute ? "string" == typeof _props.style ? element.style.cssText = _props.style : Object.assign(element.style, _props.style) : element.setAttribute(attribute, _props[attribute]);
     (0, _createEvents.createEvents)(_props, element);
   }
   return childrens.forEach(function (node) {
@@ -277,18 +278,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../../core");
-var handleClick = function handleClick() {
-  console.log("successfully loged via click!");
-};
 var _default = exports.default = function _default() {
-  return _core.olka.createElement("div", null, _core.olka.createElement("h1", {
-    onclick: handleClick,
-    className: "txt-1",
-    style: {
-      color: "grey",
-      fontSize: "30px"
-    }
-  }, "Hello, World"));
+  var cssStyles = "\n  background: linear-gradient(to right, lightblue, darkblue);\n  border-radius: 5px;\n  padding: 10px 20px;\n  color: white;\n  font-size: 16px;\n  cursor: pointer;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  transition: background 0.5s ease, color 0.5s ease;\n";
+  return _core.olka.createElement("div", null, _core.olka.createElement("span", {
+    style: cssStyles,
+    onclick: "this.style.color = 'red'"
+  }, "Hello, World!"));
 };
 },{"../../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
@@ -322,7 +317,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64441" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63734" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
