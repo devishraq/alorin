@@ -9,4 +9,6 @@ import { nanoid } from "nanoid";
  * @returns {string} The generated class name.
  */
 
-export const generateClass = (tag) => `__${tag}__${nanoid(5)} `;
+export const generateClass = (tag) => {
+	return `__${tag}__${nanoid(5)} `;
+};

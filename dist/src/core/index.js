@@ -1,1 +1,1 @@
-import*as _olka from"./dom";export{_olka as olka};
+import*as _olka from"./dom";import*as _createStyle from"./cssInJs";export{_olka as olka,_createStyle as createStyle};

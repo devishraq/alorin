@@ -259,18 +259,107 @@ Object.defineProperty(exports, "wrapper", {
 });
 var _createElement = require("./createElement");
 var _wrapper = require("./wrapper");
-},{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js"}],"../dist/src/core/index.js":[function(require,module,exports) {
+},{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js"}],"../dist/src/core/cssInJs/generateClass.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.olka = void 0;
+exports.generateClass = void 0;
+var _nanoid = require("nanoid");
+var generateClass = exports.generateClass = function generateClass(tag) {
+  return "__".concat(tag, "__").concat((0, _nanoid.nanoid)(5), " ");
+};
+},{"nanoid":"../node_modules/nanoid/index.browser.js"}],"../dist/src/core/cssInJs/insertRule.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.insertRule = void 0;
+var insertRule = exports.insertRule = function insertRule(className, styles) {
+  var styleSheet;
+  if (!(styleSheet = document.styleSheets[0])) {
+    var style = document.createElement("style");
+    document.head.appendChild(style), styleSheet = style.sheet;
+  }
+  var formattedStyles = styles.replace(/\n/g, "");
+  styleSheet.insertRule(".".concat(className, " { ").concat(formattedStyles, " }"), styleSheet.cssRules.length);
+};
+},{}],"../dist/src/core/cssInJs/createStyle.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createStyle = void 0;
+var _createElement = require("./../dom/createElement");
+var _generateClass = require("./generateClass");
+var _insertRule = require("./insertRule");
+var createStyle = exports.createStyle = function createStyle(tag) {
+  return function (styles) {
+    var className = (0, _generateClass.generateClass)(tag);
+    return (0, _insertRule.insertRule)(className, styles.join("")), function (props) {
+      var target, source;
+      return (0, _createElement.createElement)(tag, (target = function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+          var source = null != arguments[i] ? arguments[i] : {},
+            ownKeys = Object.keys(source);
+          "function" == typeof Object.getOwnPropertySymbols && (ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+            return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+          }))), ownKeys.forEach(function (key) {
+            var value;
+            value = source[key], key in target ? Object.defineProperty(target, key, {
+              value: value,
+              enumerable: !0,
+              configurable: !0,
+              writable: !0
+            }) : target[key] = value;
+          });
+        }
+        return target;
+      }({}, props), source = source = {
+        class: className
+      }, Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : function (object, enumerableOnly) {
+        var keys = Object.keys(object);
+        if (Object.getOwnPropertySymbols) {
+          var symbols = Object.getOwnPropertySymbols(object);
+          keys.push.apply(keys, symbols);
+        }
+        return keys;
+      }(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      }), target));
+    };
+  };
+};
+},{"./../dom/createElement":"../dist/src/core/dom/createElement.js","./generateClass":"../dist/src/core/cssInJs/generateClass.js","./insertRule":"../dist/src/core/cssInJs/insertRule.js"}],"../dist/src/core/cssInJs/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "createStyle", {
+  enumerable: true,
+  get: function () {
+    return _createStyle.createStyle;
+  }
+});
+var _createStyle = require("./createStyle");
+},{"./createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/core/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.olka = exports.createStyle = void 0;
 var _olka = _interopRequireWildcard(require("./dom"));
 exports.olka = _olka;
+var _createStyle = _interopRequireWildcard(require("./cssInJs"));
+exports.createStyle = _createStyle;
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/test/component/Title.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -278,14 +367,31 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../../core");
-var _default = exports.default = function _default() {
-  var cssStyles = "\n  background: linear-gradient(to right, lightblue, darkblue);\n  border-radius: 5px;\n  padding: 10px 20px;\n  color: white;\n  font-size: 16px;\n  cursor: pointer;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  transition: background 0.5s ease, color 0.5s ease;\n";
-  return _core.olka.createElement("div", null, _core.olka.createElement("span", {
-    style: cssStyles,
-    onclick: "this.style.color = 'red'"
-  }, "Hello, World!"));
+var _default = exports.default = function _default(_ref) {
+  var _ref$txt = _ref.txt,
+    txt = _ref$txt === void 0 ? "Hello, world!" : _ref$txt;
+  return _core.olka.createElement("h1", null, txt);
 };
-},{"../../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../../core":"../dist/src/core/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _core = require("../../core");
+var _createStyle = require("../../core/cssInJs/createStyle");
+var _Title = _interopRequireDefault(require("./Title"));
+var _templateObject;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+var Button = (0, _createStyle.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n\tbackground-color: #007bff;\n\tborder: none;\n\tcolor: white;\n\tpadding: 10px 20px;\n\ttext-align: center;\n\ttext-decoration: none;\n\tdisplay: inline-block;\n\tfont-size: 16px;\n\tcursor: pointer;\n\tborder-radius: 5px;\n\tmargin: 10px 0;\n\t&:hover {\n\t\tbackground-color: #0056b3;\n\t}\n\t&:active {\n\t\tbackground-color: #0056b3;\n\t\ttransform: translateY(2px);\n\t}\n\t&:focus {\n\t\toutline: none;\n\t}\n\t&:disabled {\n\t\tbackground-color: #c0c0c0;\n\t\tcursor: not-allowed;\n\t}\n\n\t@media (max-width: 768px) {\n\t\tpadding: 8px 16px;\n\t\tfont-size: 14px;\n\t}\n\t@media (max-width: 576px) {\n\t\tpadding: 6px 12px;\n\t\tfont-size: 12px;\n\t}\n\t@media (max-width: 320px) {\n\t\tpadding: 4px 8px;\n\t\tfont-size: 10px;\n\t}\n\n\t@media (min-width: 1024px) {\n\t\tpadding: 12px 24px;\n\t\tfont-size: 18px;\n\t}\n\n\t@media (min-width: 1200px) {\n\t\tpadding: 14px 28px;\n\t\tfont-size: 20px;\n\t}\n"])));
+var _default = exports.default = function _default() {
+  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(Button, null, "Click Here"), _core.olka.createElement(_Title.default, null), _core.olka.createElement("div", {
+    className: "body"
+  }, _core.olka.createElement("h1", null, "Heading 1"), _core.olka.createElement("h2", null, "Heading 2"), _core.olka.createElement("h3", null, "Heading 3"), _core.olka.createElement("h4", null, "Heading 4"), _core.olka.createElement("h5", null, "Heading 5"), _core.olka.createElement("h6", null, "Heading 6"), _core.olka.createElement("p", null, "Paragraph"), _core.olka.createElement("ol", null, _core.olka.createElement("li", null, "Ordered List Item 1"), _core.olka.createElement("li", null, "Ordered List Item 2"), _core.olka.createElement("li", null, "Ordered List Item 3"))));
+};
+},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js","./Title":"../dist/src/test/component/Title.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/component/App"));
@@ -317,7 +423,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63734" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59461" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

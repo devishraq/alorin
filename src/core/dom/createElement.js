@@ -1,6 +1,7 @@
 // Import the nanoid function for generating unique data-keys.
 import { nanoid } from "nanoid";
 
+// Import the createEvents function to add event listeners to the element.
 import { createEvents } from "./createEvents";
 
 /**
@@ -8,7 +9,7 @@ import { createEvents } from "./createEvents";
  *
  * @param {string|function} tag - The tag name of the element to create or a function that returns an element.
  * @param {Object} [props] - (Optional) An object containing properties to set on the element.
- * @param {...Node} childrens - The children to append to the element.
+ * @param {...Node} childrens - (Optional) The children to append to the element.
  * @returns {Node} The newly created element.
  */
 
@@ -39,8 +40,7 @@ export const createElement = (tag, props, ...childrens) => {
 			for (const attribute in _props) {
 				// If the attribute is "style", merge the styles. Otherwise, set the attribute.
 				if (attribute === "style") {
-
-					// Check if the style is a string or an object. Set the CSS text or merge the styles. 
+					// Check if the style is a string or an object. Set the CSS text or merge the styles.
 					typeof _props.style == "string"
 						? (element.style.cssText = _props.style)
 						: Object.assign(element.style, _props.style);
