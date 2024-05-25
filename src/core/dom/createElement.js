@@ -57,12 +57,18 @@ export const createElement = (tag, props, ...childrens) => {
 		//  If the node is an array, iterate over each child node and append it to the fragment.
 		if (Array.isArray(node)) {
 			node.forEach((child) => {
-				// If the node is an object (e.g., another DOM element), append it directly to the fragment.
+				// If the child is an object (e.g., another DOM element), append it directly to the fragment.
 				if (typeof child === "object") {
 					fragment.appendChild(child);
 				}
 
-				// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
+				//  If the child is a function, call it with the props and append the result to the fragment.
+				else if (typeof child === "function") {
+					const childElement = child(_props);
+					fragment.appendChild(childElement);
+				}
+
+				// If the child is not an object (e.g., a string), create a text node and append it to the fragment.
 				else {
 					childNode = document.createTextNode(child);
 					fragment.appendChild(childNode);
@@ -73,6 +79,11 @@ export const createElement = (tag, props, ...childrens) => {
 		// If the node is an object (e.g., another DOM element), append it directly to the fragment.
 		else if (typeof node === "object") {
 			fragment.appendChild(node);
+		}
+		// If the node is a function, call it with the props and append the result to the fragment.
+		else if (typeof node === "function") {
+			const childElement = node(_props);
+			fragment.appendChild(childElement);
 		}
 
 		// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
