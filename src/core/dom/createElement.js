@@ -45,10 +45,12 @@ export const createElement = (tag, props, ...childrens) => {
 						? (element.style.cssText = _props.style)
 						: Object.assign(element.style, _props.style);
 				} else {
+					// Set the attribute on the element.
 					element.setAttribute(attribute, _props[attribute]);
 				}
 			}
 		}
+		// Add event listeners to the element.
 		createEvents(_props, element);
 	}
 
@@ -59,6 +61,7 @@ export const createElement = (tag, props, ...childrens) => {
 			node.forEach((child) => {
 				// If the child is an object (e.g., another DOM element), append it directly to the fragment.
 				if (typeof child === "object") {
+					// If the child is an array, iterate over each child node and append it to the fragment.
 					fragment.appendChild(child);
 				}
 
