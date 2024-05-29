@@ -28,25 +28,37 @@ export const createElement = (tag, props, ...childrens) => {
 
 	// Check if the tag is a function (i.e., a component), call it. Otherwise, create a new element with the tag name.
 	if (typeof tag === "function") {
+		_props.children = childrens;
 		element = tag(_props, ...childrens);
 	} else {
 		element = document.createElement(tag);
 
-		// Set the data-key attribute to the unique ID.
-		element.setAttribute("data-key", element_id);
+		// element.setAttribute("data-key", element_id);
 
 		// If the props object is provided, set the properties on the element.
 		if (_props != null) {
 			for (const attribute in _props) {
-				// If the attribute is "style", merge the styles. Otherwise, set the attribute.
+				// Check if the attribute is a style object or a string.
 				if (attribute === "style") {
 					// Check if the style is a string or an object. Set the CSS text or merge the styles.
 					typeof _props.style == "string"
-						? (element.style.cssText = _props.style)
-						: Object.assign(element.style, _props.style);
+						? (element.style.cssText =
+								_props.style)
+						: Object.assign(
+								element.style,
+								_props.style
+						  );
 				} else {
-					// Set the attribute on the element.
-					element.setAttribute(attribute, _props[attribute]);
+					// Check if the attribute is a children property.
+					if (attribute == "children") {
+						continue;
+					} else {
+						// Set the attribute on the element.
+						element.setAttribute(
+							attribute,
+							_props[attribute]
+						);
+					}
 				}
 			}
 		}
@@ -73,7 +85,8 @@ export const createElement = (tag, props, ...childrens) => {
 
 				// If the child is not an object (e.g., a string), create a text node and append it to the fragment.
 				else {
-					childNode = document.createTextNode(child);
+					childNode =
+						document.createTextNode(child);
 					fragment.appendChild(childNode);
 				}
 			});
