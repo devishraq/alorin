@@ -28,7 +28,7 @@ export const createElement = (tag, props, ...childrens) => {
 
 	// Check if the tag is a function (i.e., a component), call it. Otherwise, create a new element with the tag name.
 	if (typeof tag === "function") {
-		_props.children = childrens;
+		// _props.children = childrens;
 		element = tag(_props, ...childrens);
 	} else {
 		element = document.createElement(tag);
@@ -41,7 +41,7 @@ export const createElement = (tag, props, ...childrens) => {
 				// Check if the attribute is a style object or a string.
 				if (attribute === "style") {
 					// Check if the style is a string or an object. Set the CSS text or merge the styles.
-					typeof _props.style == "string"
+					typeof _props.style === "string"
 						? (element.style.cssText =
 								_props.style)
 						: Object.assign(
@@ -50,7 +50,7 @@ export const createElement = (tag, props, ...childrens) => {
 						  );
 				} else {
 					// Check if the attribute is a children property.
-					if (attribute == "children") {
+					if (attribute === "children") {
 						continue;
 					} else {
 						// Set the attribute on the element.
@@ -98,14 +98,16 @@ export const createElement = (tag, props, ...childrens) => {
 		}
 		// If the node is a function, call it with the props and append the result to the fragment.
 		else if (typeof node === "function") {
-			const childElement = node(_props);
-			fragment.appendChild(childElement);
+			childNode = node(_props);
+			fragment.appendChild(childNode);
 		}
 
 		// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
 		else {
-			childNode = document.createTextNode(node);
-			fragment.appendChild(childNode);
+			if (node !== undefined) {
+				childNode = document.createTextNode(node);
+				fragment.appendChild(childNode);
+			}
 		}
 	});
 
