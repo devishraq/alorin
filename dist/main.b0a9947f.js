@@ -213,20 +213,29 @@ var _createEvents = require("./createEvents");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var createElement = exports.createElement = function createElement(tag, props) {
   var element, childNode;
-  var fragment = document.createDocumentFragment(),
-    element_id = (0, _nanoid.nanoid)(5),
-    _props = props || {};
+  var fragment = document.createDocumentFragment();
+  (0, _nanoid.nanoid)(5);
+  var _props = props || {};
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
   if ("function" == typeof tag) element = tag.apply(void 0, [_props].concat(childrens));else {
-    if ((element = document.createElement(tag)).setAttribute("data-key", element_id), null != _props) for (var attribute in _props) "style" === attribute ? "string" == typeof _props.style ? element.style.cssText = _props.style : Object.assign(element.style, _props.style) : element.setAttribute(attribute, _props[attribute]);
+    if (element = document.createElement(tag), null != _props) for (var attribute in _props) if ("style" === attribute) "string" == typeof _props.style ? element.style.cssText = _props.style : Object.assign(element.style, _props.style);else {
+      if ("children" === attribute) continue;
+      element.setAttribute(attribute, _props[attribute]);
+    }
     (0, _createEvents.createEvents)(_props, element);
   }
   return childrens.forEach(function (node) {
-    Array.isArray(node) ? node.forEach(function (child) {
-      "object" == _typeof(child) ? fragment.appendChild(child) : (childNode = document.createTextNode(child), fragment.appendChild(childNode));
-    }) : "object" == _typeof(node) ? fragment.appendChild(node) : (childNode = document.createTextNode(node), fragment.appendChild(childNode));
+    if (Array.isArray(node)) node.forEach(function (child) {
+      if ("object" == _typeof(child)) fragment.appendChild(child);else if ("function" == typeof child) {
+        var childElement = child(_props);
+        fragment.appendChild(childElement);
+      } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
+    });else if ("object" == _typeof(node)) fragment.appendChild(node);else if ("function" == typeof node) childNode = node(_props), fragment.appendChild(childNode);else {
+      if (void 0 === node) return;
+      childNode = document.createTextNode(node), fragment.appendChild(childNode);
+    }
   }), element.appendChild(fragment), element;
 };
 },{"nanoid":"../node_modules/nanoid/index.browser.js","./createEvents":"../dist/src/core/dom/createEvents.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
@@ -367,12 +376,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../../core");
+var _createStyle = require("../../core/cssInJs/createStyle");
+var _templateObject;
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+var Styled = (0, _createStyle.createStyle)("h1")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n\tcolor: #333;\n\tfont-size: 24px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tpadding: 20px;\n\tbackground-color: #f4f4f4;\n\tborder-bottom: 1px solid #ccc;\n\t&:hover {\n\t\tbackground-color: #e9e9e9;\n\t}\n\n"])));
 var _default = exports.default = function _default(_ref) {
-  var _ref$txt = _ref.txt,
-    txt = _ref$txt === void 0 ? "Hello, world!" : _ref$txt;
-  return _core.olka.createElement("h1", null, txt);
+  var children = _ref.children,
+    color = _ref.color;
+  return console.log(children), _core.olka.createElement(Styled, {
+    style: {
+      color: color
+    }
+  }, children);
 };
-},{"../../core":"../dist/src/core/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
+},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/test/component/Button.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -381,24 +398,52 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _core = require("../../core");
 var _createStyle = require("../../core/cssInJs/createStyle");
-var _Title = _interopRequireDefault(require("./Title"));
 var _templateObject;
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-var Button = (0, _createStyle.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n\tbackground-color: #007bff;\n\tborder: none;\n\tcolor: white;\n\tpadding: 10px 20px;\n\ttext-align: center;\n\ttext-decoration: none;\n\tdisplay: inline-block;\n\tfont-size: 16px;\n\tcursor: pointer;\n\tborder-radius: 5px;\n\tmargin: 10px 0;\n\t&:hover {\n\t\tbackground-color: #0056b3;\n\t}\n\t&:active {\n\t\tbackground-color: #0056b3;\n\t\ttransform: translateY(2px);\n\t}\n\t&:focus {\n\t\toutline: none;\n\t}\n\t&:disabled {\n\t\tbackground-color: #c0c0c0;\n\t\tcursor: not-allowed;\n\t}\n\n\t@media (max-width: 768px) {\n\t\tpadding: 8px 16px;\n\t\tfont-size: 14px;\n\t}\n\t@media (max-width: 576px) {\n\t\tpadding: 6px 12px;\n\t\tfont-size: 12px;\n\t}\n\t@media (max-width: 320px) {\n\t\tpadding: 4px 8px;\n\t\tfont-size: 10px;\n\t}\n\n\t@media (min-width: 1024px) {\n\t\tpadding: 12px 24px;\n\t\tfont-size: 18px;\n\t}\n\n\t@media (min-width: 1200px) {\n\t\tpadding: 14px 28px;\n\t\tfont-size: 20px;\n\t}\n"])));
-var _default = exports.default = function _default() {
-  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(Button, null, "Click Here"), _core.olka.createElement(_Title.default, null), _core.olka.createElement("div", {
-    className: "body"
-  }, _core.olka.createElement("h1", null, "Heading 1"), _core.olka.createElement("h2", null, "Heading 2"), _core.olka.createElement("h3", null, "Heading 3"), _core.olka.createElement("h4", null, "Heading 4"), _core.olka.createElement("h5", null, "Heading 5"), _core.olka.createElement("h6", null, "Heading 6"), _core.olka.createElement("p", null, "Paragraph"), _core.olka.createElement("ol", null, _core.olka.createElement("li", null, "Ordered List Item 1"), _core.olka.createElement("li", null, "Ordered List Item 2"), _core.olka.createElement("li", null, "Ordered List Item 3"))));
+var Styled = (0, _createStyle.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n\tbackground-color: #007bff;\n\tborder: none;\n\tcolor: white;\n\tpadding: 10px 20px;\n\ttext-align: center;\n\ttext-decoration: none;\n\tdisplay: inline-block;\n\tfont-size: 16px;\n\tcursor: pointer;\n\tborder-radius: 5px;\n\tmargin: 10px 0;\n\t \n"])));
+var _default = exports.default = function _default(_ref) {
+  var children = _ref.children;
+  return _core.olka.createElement(Styled, null, children);
 };
-},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js","./Title":"../dist/src/test/component/Title.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/core/widget/For.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.For = void 0;
+var _ = require("..");
+var For = exports.For = function For(_ref) {
+  var source = _ref.source,
+    children = _ref.children;
+  return console.log(source, children), _.olka.createElement("h1", null, "list rendering");
+};
+},{"..":"../dist/src/core/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _core = require("../../core");
+require("../../core/cssInJs/createStyle");
+var _Title = _interopRequireDefault(require("./Title"));
+var _Button = _interopRequireDefault(require("./Button"));
+require("../../core/widget/For");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _default = exports.default = function _default() {
+  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(_Button.default, null, "CLICK ME!"), _core.olka.createElement("div", {
+    className: "body"
+  }, _core.olka.createElement(_Title.default, null, "HERE YOU GO!")));
+};
+},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js","./Title":"../dist/src/test/component/Title.js","./Button":"../dist/src/test/component/Button.js","../../core/widget/For":"../dist/src/core/widget/For.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/component/App"));
 var _core = require("./core");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 document.querySelector("#root").appendChild(_core.olka.createElement(_App.default, null));
-},{"./test/component/App":"../dist/src/test/component/App.js","./core":"../dist/src/core/index.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./test/component/App":"../dist/src/test/component/App.js","./core":"../dist/src/core/index.js"}],"../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -423,7 +468,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59461" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49727" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
@@ -567,5 +612,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../dist/src/main.js"], null)
+},{}]},{},["../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../dist/src/main.js"], null)
 //# sourceMappingURL=/main.b0a9947f.js.map
