@@ -107,6 +107,8 @@ export const createElement = (tag, props, ...childrens) => {
 			if (node !== undefined) {
 				childNode = document.createTextNode(node);
 				fragment.appendChild(childNode);
+			} else {
+				return;
 			}
 		}
 	});
