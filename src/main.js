@@ -1,8 +1,6 @@
-import App from "./test/component/App";
+import App from "./test/App";
 import { olka } from "./core";
 
+const rootDOM = document.querySelector("#root");
 
-const rootDOM = document.querySelector('#root');
-
-rootDOM.appendChild(<App/>)
-
+rootDOM.appendChild(<App />);

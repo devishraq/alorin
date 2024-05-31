@@ -1,19 +1,32 @@
 import { olka } from "../core";
-import { createStyle } from "../core/cssInJs/createStyle";
-import Title from "./Title";
-import Button from "./Button";
-import { For } from "../core/widget/For";
-
-const arr = ["Item 1", "Item 2", "Item 3"];
+import { Title, SubTitle, Button, Paragraph } from "./Title";
 
 const App = () => {
+	const handleOnClick = () => {
+		console.log("One Click");
+	};
+
+	const handleDoubleClick = () => {
+		console.log("Double Click");
+	};
+
 	return (
-		<olka.wrapper>
-			<Button>CLICK ME!</Button>
-			<div className="body">
-				<Title>HERE YOU GO!</Title>
-			</div>
-		</olka.wrapper>
+		<>
+			<Title>Olka</Title>
+			<SubTitle>React CSS-in-JS</SubTitle>
+			<Paragraph>
+				React CSS-in-JS is a way to style React
+				components. It allows you to write CSS directly
+				in your JavaScript files. This is a simple
+				example of how to use React CSS-in-JS.
+			</Paragraph>
+			<button
+				ondblclick={handleDoubleClick}
+				onclick={handleOnClick}
+			>
+				Click me!
+			</button>
+		</>
 	);
 };
 
