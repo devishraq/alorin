@@ -10,20 +10,24 @@ export const createEvents = (props, element) => {
 	const isEventProp = (key) => key.startsWith("on");
 
 	// Filter the props to get an array of [key, value] pairs for the event handlers.
-
-	const events = Object.entries(props).filter(([key]) => isEventProp(key));
+	const events = Object.entries(props).filter(([key]) =>
+		isEventProp(key)
+	);
 
 	// For each event handler, add an event listener to the element.
 	// The event type is the key without the "on" prefix and in lowercase.
 	// The event listener calls the callback handler when the event occurs.
 	events.forEach(([key, callbackHandler]) => {
+		// Add an event listener to the element.
 		element.addEventListener(
+			// The event type is the key without the "on" prefix and in lowercase.
 			key.slice(2).toLowerCase(),
-			() => callbackHandler
+			// The event listener calls the callback handler when the event occurs.
+			callbackHandler
 		);
 	});
-	// This function does not return anything. (Just Crate Events based on Props)
-};
 
+	// This function does not return anything. (Just Create Events based on Props)
+};
 
 // Path: src/core/dom/createTextElement.js
