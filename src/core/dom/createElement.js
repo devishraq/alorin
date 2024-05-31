@@ -49,7 +49,7 @@ export const createElement = (tag, props, ...childrens) => {
 								_props.style
 						  );
 				} else {
-					// Check if the attribute is a children property.
+					// Check if the attribute is a children or an event listener.
 					if (attribute === "children") {
 						continue;
 					} else {
@@ -62,8 +62,13 @@ export const createElement = (tag, props, ...childrens) => {
 				}
 			}
 		}
-		// Add event listeners to the element.
-		createEvents(_props, element);
+
+		// Add event listeners to the element based on the props.
+		// Check if the props object contains any event handlers.
+		// If so, call the createEvents function to add the event listeners.
+		if (Object.keys(_props).some((key) => key.startsWith("on"))) {
+			createEvents(_props, element);
+		}
 	}
 
 	// Append each child node to the document fragment.
