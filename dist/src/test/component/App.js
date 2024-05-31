@@ -1,1 +1,0 @@
-import{olka}from"../../core";import"../../core/cssInJs/createStyle";import Title from"./Title";import Button from"./Button";import"../../core/widget/For";export default(()=>olka.createElement(olka.wrapper,null,olka.createElement(Button,null,"CLICK ME!"),olka.createElement("div",{className:"body"},olka.createElement(Title,null,"HERE YOU GO!"))));

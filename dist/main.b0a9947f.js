@@ -196,9 +196,7 @@ var createEvents = exports.createEvents = function createEvents(props, element) 
     var _ref4 = _slicedToArray(_ref3, 2),
       key = _ref4[0],
       callbackHandler = _ref4[1];
-    element.addEventListener(key.slice(2).toLowerCase(), function () {
-      return callbackHandler;
-    });
+    console.log(callbackHandler), element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
   });
 };
 },{}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
@@ -224,7 +222,9 @@ var createElement = exports.createElement = function createElement(tag, props) {
       if ("children" === attribute) continue;
       element.setAttribute(attribute, _props[attribute]);
     }
-    (0, _createEvents.createEvents)(_props, element);
+    Object.keys(_props).some(function (key) {
+      return key.startsWith("on");
+    }) && (0, _createEvents.createEvents)(_props, element);
   }
   return childrens.forEach(function (node) {
     if (Array.isArray(node)) node.forEach(function (child) {
@@ -368,82 +368,67 @@ var _createStyle = _interopRequireWildcard(require("./cssInJs"));
 exports.createStyle = _createStyle;
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/test/component/Title.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/test/Title.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
-var _core = require("../../core");
-var _createStyle = require("../../core/cssInJs/createStyle");
-var _templateObject;
+exports.Title = exports.SubTitle = exports.Paragraph = exports.Button = void 0;
+var _core = require("../core");
+var _createStyle = require("../core/cssInJs/createStyle");
+var _templateObject, _templateObject2, _templateObject3, _templateObject4;
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-var Styled = (0, _createStyle.createStyle)("h1")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n\tcolor: #333;\n\tfont-size: 24px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tpadding: 20px;\n\tbackground-color: #f4f4f4;\n\tborder-bottom: 1px solid #ccc;\n\t&:hover {\n\t\tbackground-color: #e9e9e9;\n\t}\n\n"])));
-var _default = exports.default = function _default(_ref) {
-  var children = _ref.children,
-    color = _ref.color;
-  return console.log(children), _core.olka.createElement(Styled, {
-    style: {
-      color: color
-    }
-  }, children);
-};
-},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/test/component/Button.js":[function(require,module,exports) {
+var StyledTitle = (0, _createStyle.createStyle)("h1")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n    color: #333;\n    font-size: 24px;\n    font-weight: bold;\n    text-align: center;\n    padding: 20px;\n    background-color: #f4f4f4;\n    border-bottom: 1px solid #ccc;\n    &:hover {\n        background-color: #e9e9e9;\n    }\n"]))),
+  Title = exports.Title = function Title(_ref) {
+    var children = _ref.children;
+    return _core.olka.createElement(StyledTitle, null, children);
+  },
+  StyledSubTitle = (0, _createStyle.createStyle)("h2")(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["\n    color: #666;\n    font-size: 20px;\n    text-align: center;\n    padding: 10px;\n    background-color: #f4f4f4;\n    border-bottom: 1px solid #ccc;\n    &:hover {\n        background-color: #e9e9e9;\n    }\n"]))),
+  SubTitle = exports.SubTitle = function SubTitle(_ref2) {
+    var children = _ref2.children;
+    return _core.olka.createElement(StyledSubTitle, null, children);
+  },
+  StyledParagraph = (0, _createStyle.createStyle)("p")(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\n    color: #999;\n    font-size: 16px;\n    text-align: justify;\n    padding: 10px;\n    background-color: #f4f4f4;\n    border-bottom: 1px solid #ccc;\n    &:hover {\n        background-color: #e9e9e9;\n    }\n"]))),
+  Paragraph = exports.Paragraph = function Paragraph(_ref3) {
+    var children = _ref3.children;
+    return _core.olka.createElement(StyledParagraph, null, children);
+  },
+  StyledButton = (0, _createStyle.createStyle)("button")(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n    color: #fff;\n    font-size: 16px;\n    padding: 10px 20px;\n    background-color: #333;\n    border: none;\n    border-radius: 5px;\n    cursor: pointer;\n    &:hover {\n        background-color: #666;\n    }\n"]))),
+  Button = exports.Button = function Button(_ref4) {
+    var children = _ref4.children,
+      onClick = _ref4.onClick;
+    return _core.olka.createElement(StyledButton, {
+      onClick: onClick
+    }, children);
+  };
+},{"../core":"../dist/src/core/index.js","../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _core = require("../../core");
-var _createStyle = require("../../core/cssInJs/createStyle");
-var _templateObject;
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-var Styled = (0, _createStyle.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n\tbackground-color: #007bff;\n\tborder: none;\n\tcolor: white;\n\tpadding: 10px 20px;\n\ttext-align: center;\n\ttext-decoration: none;\n\tdisplay: inline-block;\n\tfont-size: 16px;\n\tcursor: pointer;\n\tborder-radius: 5px;\n\tmargin: 10px 0;\n\t \n"])));
-var _default = exports.default = function _default(_ref) {
-  var children = _ref.children;
-  return _core.olka.createElement(Styled, null, children);
-};
-},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/core/widget/For.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.For = void 0;
-var _ = require("..");
-var For = exports.For = function For(_ref) {
-  var source = _ref.source,
-    children = _ref.children;
-  return console.log(source, children), _.olka.createElement("h1", null, "list rendering");
-};
-},{"..":"../dist/src/core/index.js"}],"../dist/src/test/component/App.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _core = require("../../core");
-require("../../core/cssInJs/createStyle");
-var _Title = _interopRequireDefault(require("./Title"));
-var _Button = _interopRequireDefault(require("./Button"));
-require("../../core/widget/For");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _core = require("../core");
+var _Title = require("./Title");
 var _default = exports.default = function _default() {
-  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(_Button.default, null, "CLICK ME!"), _core.olka.createElement("div", {
-    className: "body"
-  }, _core.olka.createElement(_Title.default, null, "HERE YOU GO!")));
+  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(_Title.Title, null, "Olka"), _core.olka.createElement(_Title.SubTitle, null, "React CSS-in-JS"), _core.olka.createElement(_Title.Paragraph, null, "React CSS-in-JS is a way to style React components. It allows you to write CSS directly in your JavaScript files. This is a simple example of how to use React CSS-in-JS."), _core.olka.createElement("button", {
+    ondblclick: function ondblclick() {
+      console.log("Double Click");
+    },
+    onclick: function onclick() {
+      console.log("One Click");
+    }
+  }, "Click me!"));
 };
-},{"../../core":"../dist/src/core/index.js","../../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js","./Title":"../dist/src/test/component/Title.js","./Button":"../dist/src/test/component/Button.js","../../core/widget/For":"../dist/src/core/widget/For.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../core":"../dist/src/core/index.js","./Title":"../dist/src/test/Title.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
-var _App = _interopRequireDefault(require("./test/component/App"));
+var _App = _interopRequireDefault(require("./test/App"));
 var _core = require("./core");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 document.querySelector("#root").appendChild(_core.olka.createElement(_App.default, null));
-},{"./test/component/App":"../dist/src/test/component/App.js","./core":"../dist/src/core/index.js"}],"../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./test/App":"../dist/src/test/App.js","./core":"../dist/src/core/index.js"}],"../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -468,7 +453,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49727" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65063" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
