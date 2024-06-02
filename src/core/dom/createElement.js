@@ -120,6 +120,7 @@ export const createElement = (tag, props, ...childrens) => {
 
 	// After all child nodes have been appended to the fragment, append the fragment to the main element.
 	element.appendChild(fragment);
+
 	// Return the newly created element with all its children.
 	return element;
 };
