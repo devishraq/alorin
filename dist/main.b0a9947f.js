@@ -196,7 +196,7 @@ var createEvents = exports.createEvents = function createEvents(props, element) 
     var _ref4 = _slicedToArray(_ref3, 2),
       key = _ref4[0],
       callbackHandler = _ref4[1];
-    console.log(callbackHandler), element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
+    element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
   });
 };
 },{}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
@@ -368,41 +368,49 @@ var _createStyle = _interopRequireWildcard(require("./cssInJs"));
 exports.createStyle = _createStyle;
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/test/Title.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/core/reactivity/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Title = exports.SubTitle = exports.Paragraph = exports.Button = void 0;
-var _core = require("../core");
-var _createStyle = require("../core/cssInJs/createStyle");
-var _templateObject, _templateObject2, _templateObject3, _templateObject4;
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-var StyledTitle = (0, _createStyle.createStyle)("h1")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n    color: #333;\n    font-size: 24px;\n    font-weight: bold;\n    text-align: center;\n    padding: 20px;\n    background-color: #f4f4f4;\n    border-bottom: 1px solid #ccc;\n    &:hover {\n        background-color: #e9e9e9;\n    }\n"]))),
-  Title = exports.Title = function Title(_ref) {
-    var children = _ref.children;
-    return _core.olka.createElement(StyledTitle, null, children);
-  },
-  StyledSubTitle = (0, _createStyle.createStyle)("h2")(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["\n    color: #666;\n    font-size: 20px;\n    text-align: center;\n    padding: 10px;\n    background-color: #f4f4f4;\n    border-bottom: 1px solid #ccc;\n    &:hover {\n        background-color: #e9e9e9;\n    }\n"]))),
-  SubTitle = exports.SubTitle = function SubTitle(_ref2) {
-    var children = _ref2.children;
-    return _core.olka.createElement(StyledSubTitle, null, children);
-  },
-  StyledParagraph = (0, _createStyle.createStyle)("p")(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\n    color: #999;\n    font-size: 16px;\n    text-align: justify;\n    padding: 10px;\n    background-color: #f4f4f4;\n    border-bottom: 1px solid #ccc;\n    &:hover {\n        background-color: #e9e9e9;\n    }\n"]))),
-  Paragraph = exports.Paragraph = function Paragraph(_ref3) {
-    var children = _ref3.children;
-    return _core.olka.createElement(StyledParagraph, null, children);
-  },
-  StyledButton = (0, _createStyle.createStyle)("button")(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n    color: #fff;\n    font-size: 16px;\n    padding: 10px 20px;\n    background-color: #333;\n    border: none;\n    border-radius: 5px;\n    cursor: pointer;\n    &:hover {\n        background-color: #666;\n    }\n"]))),
-  Button = exports.Button = function Button(_ref4) {
-    var children = _ref4.children,
-      onClick = _ref4.onClick;
-    return _core.olka.createElement(StyledButton, {
-      onClick: onClick
-    }, children);
+exports.createReactiveComponent = createReactiveComponent;
+exports.createReactiveVariable = createReactiveVariable;
+exports.triggerUpdates = triggerUpdates;
+var dependenciesMap = new Map();
+function createReactiveVariable(initialValue) {
+  var value = initialValue,
+    subscribers = new Set();
+  function notifySubscribers() {
+    subscribers.forEach(function (subscriber) {
+      return subscriber();
+    });
+  }
+  return [function () {
+    return value;
+  }, function (newValue) {
+    newValue !== value && (value = newValue, notifySubscribers());
+  }, function (subscriber) {
+    return subscribers.add(subscriber), dependenciesMap.set(subscriber, notifySubscribers), function () {
+      return subscribers.delete(subscriber);
+    };
+  }];
+}
+function createReactiveComponent(renderFunction) {
+  var update = function update() {
+    console.log("Updating DOM:", renderFunction());
   };
-},{"../core":"../dist/src/core/index.js","../core/cssInJs/createStyle":"../dist/src/core/cssInJs/createStyle.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+  return update(), dependenciesMap.set(update, function () {
+    update();
+  }), update;
+}
+function triggerUpdates() {
+  dependenciesMap.forEach(function (notify) {
+    return notify();
+  });
+}
+setCount(1), triggerUpdates();
+},{}],"../dist/src/test/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -410,18 +418,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../core");
-var _Title = require("./Title");
+var _index = require("../core/reactivity/index");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+var _createReactiveVariab = (0, _index.createReactiveVariable)(0),
+  _createReactiveVariab2 = _slicedToArray(_createReactiveVariab, 3),
+  count = _createReactiveVariab2[0],
+  setCount = _createReactiveVariab2[1],
+  subscribeCount = _createReactiveVariab2[2],
+  increment = function increment() {
+    setCount(count() + 1);
+  },
+  decrement = function decrement() {
+    setCount(count() - 1);
+  };
+(0, _index.createReactiveComponent)(function () {
+  return _core.olka.createElement("div", null, _core.olka.createElement("h1", null, "Count: ", count()), _core.olka.createElement("button", {
+    onClick: increment
+  }, "Increment"), _core.olka.createElement("button", {
+    onClick: decrement
+  }, "Decrement"));
+});
 var _default = exports.default = function _default() {
-  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(_Title.Title, null, "Olka"), _core.olka.createElement(_Title.SubTitle, null, "React CSS-in-JS"), _core.olka.createElement(_Title.Paragraph, null, "React CSS-in-JS is a way to style React components. It allows you to write CSS directly in your JavaScript files. This is a simple example of how to use React CSS-in-JS."), _core.olka.createElement("button", {
-    ondblclick: function ondblclick() {
-      console.log("Double Click");
-    },
-    onclick: function onclick() {
-      console.log("One Click");
-    }
-  }, "Click me!"));
+  return _core.olka.createElement("div", null, _core.olka.createElement("counter", null));
 };
-},{"../core":"../dist/src/core/index.js","./Title":"../dist/src/test/Title.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../core":"../dist/src/core/index.js","../core/reactivity/index":"../dist/src/core/reactivity/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/App"));
@@ -453,7 +478,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65063" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55753" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
