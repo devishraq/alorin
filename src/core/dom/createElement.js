@@ -76,16 +76,23 @@ export const createElement = (tag, props, ...childrens) => {
 		//  If the node is an array, iterate over each child node and append it to the fragment.
 		if (Array.isArray(node)) {
 			node.forEach((child) => {
-				// If the child is an object (e.g., another DOM element), append it directly to the fragment.
-				if (typeof child === "object") {
+				// Check if the child is a node or a function.
+				if (child instanceof Node) {
 					// If the child is an array, iterate over each child node and append it to the fragment.
 					fragment.appendChild(child);
 				}
 
 				//  If the child is a function, call it with the props and append the result to the fragment.
 				else if (typeof child === "function") {
+					// Call the function with the props and append the result to the fragment.
 					const childElement = child(_props);
-					fragment.appendChild(childElement);
+					// Check if the child element is a DOM node.
+					if (childElement instanceof Node) {
+						// Append the child element to the fragment.
+						fragment.appendChild(
+							childElement
+						);
+					}
 				}
 
 				// If the child is not an object (e.g., a string), create a text node and append it to the fragment.
@@ -98,13 +105,19 @@ export const createElement = (tag, props, ...childrens) => {
 		}
 
 		// If the node is an object (e.g., another DOM element), append it directly to the fragment.
-		else if (typeof node === "object") {
+		else if (node instanceof Node) {
 			fragment.appendChild(node);
 		}
 		// If the node is a function, call it with the props and append the result to the fragment.
 		else if (typeof node === "function") {
+			// Call the function with the props and append the result to the fragment.
 			childNode = node(_props);
-			fragment.appendChild(childNode);
+			// Check if the child element is a DOM node.
+			if (childNode instanceof Node) {
+				// Append the child element to the fragment.
+
+				fragment.appendChild(childNode);
+			}
 		}
 
 		// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
