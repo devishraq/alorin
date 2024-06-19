@@ -199,7 +199,75 @@ var createEvents = exports.createEvents = function createEvents(props, element) 
     element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
   });
 };
-},{}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
+},{}],"../dist/src/core/reactivity/createComputation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.currentComputation = exports.createComputation = void 0;
+var currentComputation = exports.currentComputation = null,
+  createComputation = exports.createComputation = function createComputation(computation) {
+    var executeComputation = function executeComputation() {
+      exports.currentComputation = currentComputation = executeComputation, computation(), exports.currentComputation = currentComputation = null;
+    };
+    executeComputation();
+  };
+},{}],"../dist/src/core/reactivity/createSignal.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _createComputation = require("./createComputation.js");
+var _default = exports.default = function _default(initialValue) {
+  var value = initialValue,
+    subscribers = new Set(),
+    notifySubscribers = function notifySubscribers() {
+      subscribers.forEach(function (subscriber) {
+        return subscriber();
+      });
+    };
+  return [function () {
+    return _createComputation.currentComputation && subscribers.add(_createComputation.currentComputation), value;
+  }, function (newValue) {
+    value = newValue, notifySubscribers();
+  }];
+};
+},{"./createComputation.js":"../dist/src/core/reactivity/createComputation.js"}],"../dist/src/core/reactivity/createEffect.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _createComputation = require("./createComputation");
+var _default = exports.default = function _default(effect) {
+  (0, _createComputation.createComputation)(effect);
+};
+},{"./createComputation":"../dist/src/core/reactivity/createComputation.js"}],"../dist/src/core/reactivity/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "createEffect", {
+  enumerable: true,
+  get: function () {
+    return _createEffect.default;
+  }
+});
+Object.defineProperty(exports, "createSignal", {
+  enumerable: true,
+  get: function () {
+    return _createSignal.default;
+  }
+});
+var _createSignal = _interopRequireDefault(require("./createSignal"));
+var _createEffect = _interopRequireDefault(require("./createEffect"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./createSignal":"../dist/src/core/reactivity/createSignal.js","./createEffect":"../dist/src/core/reactivity/createEffect.js"}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -208,7 +276,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.createElement = void 0;
 var _nanoid = require("nanoid");
 var _createEvents = require("./createEvents");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+require("../reactivity");
 var createElement = exports.createElement = function createElement(tag, props) {
   var element, childNode;
   var fragment = document.createDocumentFragment();
@@ -228,17 +296,20 @@ var createElement = exports.createElement = function createElement(tag, props) {
   }
   return childrens.forEach(function (node) {
     if (Array.isArray(node)) node.forEach(function (child) {
-      if ("object" == _typeof(child)) fragment.appendChild(child);else if ("function" == typeof child) {
+      if (child instanceof Node) fragment.appendChild(child);else if ("function" == typeof child) {
         var childElement = child(_props);
-        fragment.appendChild(childElement);
+        childElement instanceof Node && fragment.appendChild(childElement);
       } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
-    });else if ("object" == _typeof(node)) fragment.appendChild(node);else if ("function" == typeof node) childNode = node(_props), fragment.appendChild(childNode);else {
+    });else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) {
+      var childElement = node(_props);
+      fragment.appendChild(childElement);
+    } else {
       if (void 0 === node) return;
       childNode = document.createTextNode(node), fragment.appendChild(childNode);
     }
   }), element.appendChild(fragment), element;
 };
-},{"nanoid":"../node_modules/nanoid/index.browser.js","./createEvents":"../dist/src/core/dom/createEvents.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
+},{"nanoid":"../node_modules/nanoid/index.browser.js","./createEvents":"../dist/src/core/dom/createEvents.js","../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -368,49 +439,7 @@ var _createStyle = _interopRequireWildcard(require("./cssInJs"));
 exports.createStyle = _createStyle;
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/core/reactivity/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createReactiveComponent = createReactiveComponent;
-exports.createReactiveVariable = createReactiveVariable;
-exports.triggerUpdates = triggerUpdates;
-var dependenciesMap = new Map();
-function createReactiveVariable(initialValue) {
-  var value = initialValue,
-    subscribers = new Set();
-  function notifySubscribers() {
-    subscribers.forEach(function (subscriber) {
-      return subscriber();
-    });
-  }
-  return [function () {
-    return value;
-  }, function (newValue) {
-    newValue !== value && (value = newValue, notifySubscribers());
-  }, function (subscriber) {
-    return subscribers.add(subscriber), dependenciesMap.set(subscriber, notifySubscribers), function () {
-      return subscribers.delete(subscriber);
-    };
-  }];
-}
-function createReactiveComponent(renderFunction) {
-  var update = function update() {
-    console.log("Updating DOM:", renderFunction());
-  };
-  return update(), dependenciesMap.set(update, function () {
-    update();
-  }), update;
-}
-function triggerUpdates() {
-  dependenciesMap.forEach(function (notify) {
-    return notify();
-  });
-}
-setCount(1), triggerUpdates();
-},{}],"../dist/src/test/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -418,35 +447,31 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../core");
-var _index = require("../core/reactivity/index");
+var _reactivity = require("../core/reactivity");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var _createReactiveVariab = (0, _index.createReactiveVariable)(0),
-  _createReactiveVariab2 = _slicedToArray(_createReactiveVariab, 3),
-  count = _createReactiveVariab2[0],
-  setCount = _createReactiveVariab2[1],
-  subscribeCount = _createReactiveVariab2[2],
-  increment = function increment() {
-    setCount(count() + 1);
-  },
-  decrement = function decrement() {
-    setCount(count() - 1);
-  };
-(0, _index.createReactiveComponent)(function () {
-  return _core.olka.createElement("div", null, _core.olka.createElement("h1", null, "Count: ", count()), _core.olka.createElement("button", {
-    onClick: increment
-  }, "Increment"), _core.olka.createElement("button", {
-    onClick: decrement
-  }, "Decrement"));
-});
 var _default = exports.default = function _default() {
-  return _core.olka.createElement("div", null, _core.olka.createElement("counter", null));
+  var _createSignal = (0, _reactivity.createSignal)(0),
+    _createSignal2 = _slicedToArray(_createSignal, 2),
+    count = _createSignal2[0],
+    setCount = _createSignal2[1];
+  return (0, _reactivity.createEffect)(function () {
+    console.log("count", count());
+  }), _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("p", null, count()), _core.olka.createElement("button", {
+    onclick: function onclick() {
+      setCount(count() + 1);
+    }
+  }, "Plus"), _core.olka.createElement("button", {
+    onclick: function onclick() {
+      setCount(count() - 1);
+    }
+  }, "Minus"));
 };
-},{"../core":"../dist/src/core/index.js","../core/reactivity/index":"../dist/src/core/reactivity/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../core":"../dist/src/core/index.js","../core/reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/App"));
@@ -478,7 +503,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55753" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57299" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
