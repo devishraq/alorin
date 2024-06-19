@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 
 // Import the createEvents function to add event listeners to the element.
 import { createEvents } from "./createEvents";
+import { createEffect } from "../reactivity";
 
 /**
  * Creates a new *Olka* element with the given tag and children.
@@ -110,14 +111,8 @@ export const createElement = (tag, props, ...childrens) => {
 		}
 		// If the node is a function, call it with the props and append the result to the fragment.
 		else if (typeof node === "function") {
-			// Call the function with the props and append the result to the fragment.
-			childNode = node(_props);
-			// Check if the child element is a DOM node.
-			if (childNode instanceof Node) {
-				// Append the child element to the fragment.
-
-				fragment.appendChild(childNode);
-			}
+			const childElement = node(_props);
+			fragment.appendChild(childElement);
 		}
 
 		// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
