@@ -120,8 +120,16 @@ export const createElement = (tag, props, ...childrens) => {
 		}
 		// If the node is a function, call it with the props and append the result to the fragment.
 		else if (typeof node === "function") {
-			const childElement = node(_props);
-			fragment.appendChild(childElement);
+			if (node.isSignal) {
+				const textNode = document.createTextNode("");
+				createEffect(() => {
+					textNode.textContent = node();
+				});
+				fragment.appendChild(textNode);
+			} else {
+				const childElement = node(_props);
+				fragment.appendChild(childElement);
+			}
 		}
 
 		// If the node is not an object (e.g., a string), create a text node and append it to the fragment.
