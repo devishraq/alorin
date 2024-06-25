@@ -1,5 +1,5 @@
 import { olka } from "../core";
-import { createStyle } from "../core/cssInJs/createStyle";
+import { createStyle } from "../core/cssInJs";
 
 const Styled = createStyle("button")`
     background-color: orange;

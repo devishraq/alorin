@@ -1,5 +1,7 @@
 import { olka } from "../core";
 import { createSignal, createEffect } from "../core/reactivity"; // Adjust the import path as needed
+import Show from "../core/widget/Display/Show";
+import Button from "./Button";
 
 const App = () => {
 	const [count, setCount] = createSignal(0);
@@ -21,6 +23,9 @@ const App = () => {
 			<p>{count()}</p>
 			<button onclick={increment}>Plus</button>
 			<button onclick={decrement}>Minus</button>
+			<Show condition={true}>
+				<Button>Click Me!</Button>
+			</Show>
 		</>
 	);
 };

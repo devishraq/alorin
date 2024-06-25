@@ -40,9 +40,9 @@ export const createElement = (tag, props, ...childrens) => {
 		if (_props != null) {
 			for (const attribute in _props) {
 				// Check if the attribute is a style object or a string.
-				if (attribute === "style") {
+				if (attribute == "style") {
 					// Check if the style is a string or an object. Set the CSS text or merge the styles.
-					typeof _props.style === "string"
+					typeof _props.style == "string"
 						? (element.style.cssText =
 								_props.style)
 						: Object.assign(
@@ -75,8 +75,12 @@ export const createElement = (tag, props, ...childrens) => {
 	// Append each child node to the document fragment.
 	childrens.forEach((node) => {
 		//  If the node is an array, iterate over each child node and append it to the fragment.
+		if (node == null) return;
+
 		if (Array.isArray(node)) {
 			node.forEach((child) => {
+				if (child == null) return;
+
 				// Check if the child is a node or a function.
 				if (child instanceof Node) {
 					// If the child is an array, iterate over each child node and append it to the fragment.
@@ -103,6 +107,11 @@ export const createElement = (tag, props, ...childrens) => {
 					fragment.appendChild(childNode);
 				}
 			});
+		}
+
+		// If node is null, return nothing, made for conditional rendering.
+		else if (node == null) {
+			return;
 		}
 
 		// If the node is an object (e.g., another DOM element), append it directly to the fragment.

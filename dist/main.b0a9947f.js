@@ -286,7 +286,7 @@ var createElement = exports.createElement = function createElement(tag, props) {
     childrens[_key - 2] = arguments[_key];
   }
   if ("function" == typeof tag) element = tag.apply(void 0, [_props].concat(childrens));else {
-    if (element = document.createElement(tag), null != _props) for (var attribute in _props) if ("style" === attribute) "string" == typeof _props.style ? element.style.cssText = _props.style : Object.assign(element.style, _props.style);else {
+    if (element = document.createElement(tag), null != _props) for (var attribute in _props) if ("style" == attribute) "string" == typeof _props.style ? element.style.cssText = _props.style : Object.assign(element.style, _props.style);else {
       if ("children" === attribute) continue;
       element.setAttribute(attribute, _props[attribute]);
     }
@@ -295,17 +295,21 @@ var createElement = exports.createElement = function createElement(tag, props) {
     }) && (0, _createEvents.createEvents)(_props, element);
   }
   return childrens.forEach(function (node) {
-    if (Array.isArray(node)) node.forEach(function (child) {
-      if (child instanceof Node) fragment.appendChild(child);else if ("function" == typeof child) {
-        var childElement = child(_props);
-        childElement instanceof Node && fragment.appendChild(childElement);
-      } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
-    });else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) {
-      var childElement = node(_props);
-      fragment.appendChild(childElement);
-    } else {
-      if (void 0 === node) return;
-      childNode = document.createTextNode(node), fragment.appendChild(childNode);
+    if (null != node) {
+      if (Array.isArray(node)) node.forEach(function (child) {
+        if (null != child) {
+          if (child instanceof Node) fragment.appendChild(child);else if ("function" == typeof child) {
+            var childElement = child(_props);
+            childElement instanceof Node && fragment.appendChild(childElement);
+          } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
+        }
+      });else if (null == node) return;else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) {
+        var childElement = node(_props);
+        fragment.appendChild(childElement);
+      } else {
+        if (void 0 === node) return;
+        childNode = document.createTextNode(node), fragment.appendChild(childNode);
+      }
     }
   }), element.appendChild(fragment), element;
 };
@@ -432,14 +436,47 @@ var _createStyle = require("./createStyle");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.olka = exports.createStyle = void 0;
+Object.defineProperty(exports, "createStyle", {
+  enumerable: true,
+  get: function () {
+    return _cssInJs.createStyle;
+  }
+});
+exports.olka = void 0;
 var _olka = _interopRequireWildcard(require("./dom"));
 exports.olka = _olka;
-var _createStyle = _interopRequireWildcard(require("./cssInJs"));
-exports.createStyle = _createStyle;
+var _cssInJs = require("./cssInJs");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/core/widget/Display/Show.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _ = require("../..");
+var _default = exports.default = function _default(_ref) {
+  var condition = _ref.condition,
+    children = _ref.children;
+  return !0 == condition ? _.olka.createElement(_.olka.wrapper, null, children) : _.olka.createElement(_.olka.wrapper, null);
+};
+},{"../..":"../dist/src/core/index.js"}],"../dist/src/test/Button.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _core = require("../core");
+var _templateObject;
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+var Styled = (0, _core.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n    background-color: orange;\n    color: white;\n    font-size: 14px;\n    padding : 15px 15px 15px 15px;\n    border-radius: 15px;\n    outline: none;\n    border: none;\n"])));
+var _default = exports.default = function _default(_ref) {
+  var children = _ref.children;
+  return _core.olka.createElement(Styled, null, children);
+};
+},{"../core":"../dist/src/core/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -448,6 +485,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _core = require("../core");
 var _reactivity = require("../core/reactivity");
+var _Show = _interopRequireDefault(require("../core/widget/Display/Show"));
+var _Button = _interopRequireDefault(require("./Button"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -469,9 +509,11 @@ var _default = exports.default = function _default() {
     onclick: function onclick() {
       setCount(count() - 1);
     }
-  }, "Minus"));
+  }, "Minus"), _core.olka.createElement(_Show.default, {
+    condition: !0
+  }, _core.olka.createElement(_Button.default, null, "Click Me!")));
 };
-},{"../core":"../dist/src/core/index.js","../core/reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../core":"../dist/src/core/index.js","../core/reactivity":"../dist/src/core/reactivity/index.js","../core/widget/Display/Show":"../dist/src/core/widget/Display/Show.js","./Button":"../dist/src/test/Button.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/App"));
@@ -503,7 +545,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57299" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56910" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
