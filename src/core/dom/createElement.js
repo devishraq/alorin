@@ -15,66 +15,56 @@ export const createElement = (tag, props, ...childrens) => {
 	}
 
 	processChildrens(childrens);
-
 	element.appendChild(fragment);
-
 	return element;
 };
-
 
 // Props Handling
 
 const propsHandler = (elementProps) => {
-	if (elementProps != null) {
-		propsAttributeHandler(elementProps);
-	}
+	if (elementProps != null) propsAttributeHandler(elementProps);
 	propsEventsHandler(elementProps);
 };
-
 
 const propsAttributeHandler = (elementProps) => {
 	for (const attribute in elementProps) {
 		if (attribute == "style") {
 			propsStyleHandler(elementProps);
 		} else {
-			attribute === "children" ? null : element.setAttribute(attribute, elementProps[attribute]);
+			attribute === "children"
+				? null
+				: element.setAttribute(
+					attribute,
+					elementProps[attribute]
+				);
 		}
 	}
-}
-
-const propsStyleHandler = (elementProps) => {
-	typeof elementProps.style == "string"
-		? (element.style.cssText = elementProps.style)
-		: Object.assign(element.style, elementProps.style);
 };
 
-const propsEventsHandler = (elementProps) => {
-	const isEventAvailable = Object.keys(elementProps).some((key) => key.startsWith("on"));
-
-	if (isEventAvailable) {
-		createEvents(elementProps, element);
+const propsStyleHandler = (elementProps) => {
+	if (typeof elementProps.style === "string") {
+		element.style.cssText = elementProps.style;
+	} else {
+		Object.assign(element.style, elementProps.style);
 	}
 };
 
+const propsEventsHandler = (elementProps) =>
+	createEvents(elementProps, element);
 
 // Child Processing
-
 const processChildrens = (childrens) => {
 	childrens.forEach((node) => {
 		if (Array.isArray(node)) {
-			processChildOfChildrens(node)
+			processChildOfChildrens(node);
 		} else if (node == null) {
 			return;
 		} else if (node instanceof Node) {
 			fragment.appendChild(node);
 		} else if (typeof node === "function") {
-			if (node.isSignal) {
-				signalHandler(node);
-			}
-			else {
-				const childElement = node(elementProps);
-				fragment.appendChild(childElement);
-			}
+			node.isSignal
+				? signalHandler(node)
+				: fragment.appendChild(node(elementProps));
 		} else {
 			if (node !== undefined) {
 				childNode = document.createTextNode(node);
@@ -91,26 +81,26 @@ const processChildOfChildrens = (child) => {
 		if (child instanceof Node) {
 			fragment.appendChild(child);
 		} else if (typeof child === "function") {
-			const childElement =
-				child(elementProps);
+			const childElement = child(elementProps);
 			if (childElement instanceof Node) {
-				fragment.appendChild(
-					childElement
-				);
+				fragment.appendChild(childElement);
 			}
 		} else {
-			childNode =
-				document.createTextNode(child);
+			childNode = document.createTextNode(child);
 			fragment.appendChild(childNode);
 		}
 	});
-}
-
+};
 
 const signalHandler = (node) => {
 	const textNode = document.createTextNode("");
 	createEffect(() => {
-		textNode.textContent = node();
+		const value = node();
+		if (typeof value === "object" && value !== null) {
+			textNode.textContent = String(value);
+		} else {
+			textNode.textContent = String(value);
+		}
 	});
 	fragment.appendChild(textNode);
-}
+};
