@@ -186,7 +186,22 @@ Object.defineProperty(exports, "createSignal", {
 var _createSignal = _interopRequireDefault(require("./createSignal"));
 var _createEffect = _interopRequireDefault(require("./createEffect"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./createSignal":"../dist/src/core/reactivity/createSignal.js","./createEffect":"../dist/src/core/reactivity/createEffect.js"}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
+},{"./createSignal":"../dist/src/core/reactivity/createSignal.js","./createEffect":"../dist/src/core/reactivity/createEffect.js"}],"../dist/src/core/dom/signalHandler.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.signalHandler = void 0;
+var _reactivity = require("../reactivity");
+var signalHandler = exports.signalHandler = function signalHandler(node, fragment) {
+  var textNode = document.createTextNode("");
+  (0, _reactivity.createEffect)(function () {
+    var value = node();
+    textNode.nodeValue = value;
+  }), fragment.appendChild(textNode);
+};
+},{"../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/createElement.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -194,7 +209,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createElement = void 0;
 var _dom = require("../dom");
-var _reactivity = require("../reactivity");
+require("../reactivity");
+var _signalHandler = require("./signalHandler");
 var element, childNode;
 var fragment = document.createDocumentFragment();
 var createElement = exports.createElement = function createElement(tag, props) {
@@ -218,7 +234,7 @@ var propsHandler = function propsHandler(elementProps1) {
   },
   processChildrens = function processChildrens(childrens) {
     childrens.forEach(function (node) {
-      if (Array.isArray(node)) processChildOfChildrens(node);else if (null == node) return;else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) node.isSignal ? signalHandler(node) : fragment.appendChild(node(elementProps));else {
+      if (Array.isArray(node)) processChildOfChildrens(node);else if (null == node) return;else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) node.isSignal ? (0, _signalHandler.signalHandler)(node, fragment) : fragment.appendChild(node(elementProps));else {
         if (void 0 === node) return;
         childNode = document.createTextNode(node), fragment.appendChild(childNode);
       }
@@ -231,15 +247,8 @@ var propsHandler = function propsHandler(elementProps1) {
         childElement instanceof Node && fragment.appendChild(childElement);
       } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
     });
-  },
-  signalHandler = function signalHandler(node) {
-    var textNode = document.createTextNode("");
-    (0, _reactivity.createEffect)(function () {
-      var value = node();
-      textNode.nodeValue = value;
-    }), fragment.appendChild(textNode);
   };
-},{"../dom":"../dist/src/core/dom/index.js","../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
+},{"../dom":"../dist/src/core/dom/index.js","../reactivity":"../dist/src/core/reactivity/index.js","./signalHandler":"../dist/src/core/dom/signalHandler.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

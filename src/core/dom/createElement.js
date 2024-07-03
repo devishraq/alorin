@@ -1,5 +1,6 @@
 import { createEvent } from "../dom";
 import { createEffect } from "../reactivity";
+import { signalHandler } from "./signalHandler";
 
 const fragment = document.createDocumentFragment();
 let element, childNode;
@@ -65,7 +66,7 @@ const processChildrens = (childrens) => {
 			fragment.appendChild(node);
 		} else if (typeof node === "function") {
 			node.isSignal
-				? signalHandler(node)
+				? signalHandler(node, fragment)
 				: fragment.appendChild(node(elementProps));
 		} else {
 			if (node !== undefined) {
@@ -94,11 +95,4 @@ const processChildOfChildrens = (child) => {
 	});
 };
 
-const signalHandler = (node) => {
-	const textNode = document.createTextNode("");
-	createEffect(() => {
-		const value = node();
-		textNode.nodeValue = value;
-	});
-	fragment.appendChild(textNode);
-};
+
