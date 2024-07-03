@@ -1,5 +1,4 @@
 import { createEvent } from "../dom";
-import { createEffect } from "../reactivity";
 import { signalHandler } from "./signalHandler";
 
 const fragment = document.createDocumentFragment();

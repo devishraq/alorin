@@ -209,7 +209,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createElement = void 0;
 var _dom = require("../dom");
-require("../reactivity");
 var _signalHandler = require("./signalHandler");
 var element, childNode;
 var fragment = document.createDocumentFragment();
@@ -248,7 +247,7 @@ var propsHandler = function propsHandler(elementProps1) {
       } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
     });
   };
-},{"../dom":"../dist/src/core/dom/index.js","../reactivity":"../dist/src/core/reactivity/index.js","./signalHandler":"../dist/src/core/dom/signalHandler.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
+},{"../dom":"../dist/src/core/dom/index.js","./signalHandler":"../dist/src/core/dom/signalHandler.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
