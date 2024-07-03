@@ -16,11 +16,26 @@ const createSignal = (initialValue) => {
 	};
 
 	const setValue = (newValue) => {
-		value = newValue;
+		if (value === newValue) {
+			return;
+		}
+		else if (typeof newValue === "function") {
+			value = newValue(value);
+		}
+		else {
+			value = newValue;
+		}
+
 		notifySubscribers();
 	};
 
+
+	getValue.isSignal = true;
+
+
 	return [getValue, setValue];
+
+
 };
 
 export default createSignal;
