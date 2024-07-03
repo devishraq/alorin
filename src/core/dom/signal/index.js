@@ -1,0 +1,1 @@
+export { signalHandler } from './signalHandler';
