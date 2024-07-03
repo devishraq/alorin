@@ -1,35 +1,36 @@
 import { createEvent } from "../dom";
 import { signalHandler } from "./signalHandler";
 
-const fragment = document.createDocumentFragment();
-let element, childNode;
 
 export const createElement = (tag, props, ...childrens) => {
 	let _props = props || {};
+
+	const fragment = document.createDocumentFragment();
+	let element, childNode;
 
 	if (typeof tag === "function") {
 		element = tag(_props, ...childrens);
 	} else {
 		element = document.createElement(tag);
-		propsHandler(_props);
+		propsHandler(_props, element);
 	}
 
-	processChildrens(childrens);
+	processChildrens(childrens, fragment, childNode);
 	element.appendChild(fragment);
 	return element;
 };
 
 // Props Handling
 
-const propsHandler = (elementProps) => {
-	if (elementProps != null) propsAttributeHandler(elementProps);
-	propsEventsHandler(elementProps);
+const propsHandler = (elementProps, element) => {
+	if (elementProps != null) propsAttributeHandler(elementProps, element);
+	propsEventsHandler(elementProps, element);
 };
 
-const propsAttributeHandler = (elementProps) => {
+const propsAttributeHandler = (elementProps, element) => {
 	for (const attribute in elementProps) {
 		if (attribute == "style") {
-			propsStyleHandler(elementProps);
+			propsStyleHandler(elementProps, element);
 		} else {
 			attribute === "children"
 				? null
@@ -41,7 +42,7 @@ const propsAttributeHandler = (elementProps) => {
 	}
 };
 
-const propsStyleHandler = (elementProps) => {
+const propsStyleHandler = (elementProps, element) => {
 	if (typeof elementProps.style === "string") {
 		element.style.cssText = elementProps.style;
 	} else {
@@ -49,16 +50,16 @@ const propsStyleHandler = (elementProps) => {
 	}
 };
 
-const propsEventsHandler = (elementProps) => {
+const propsEventsHandler = (elementProps, element) => {
 	createEvent(elementProps, element);
 }
 
 
 // Child Processing
-const processChildrens = (childrens) => {
+const processChildrens = (childrens, fragment, childNode) => {
 	childrens.forEach((node) => {
 		if (Array.isArray(node)) {
-			processChildOfChildrens(node);
+			processChildOfChildrens(node, fragment);
 		} else if (node == null) {
 			return;
 		} else if (node instanceof Node) {
@@ -78,7 +79,7 @@ const processChildrens = (childrens) => {
 	});
 };
 
-const processChildOfChildrens = (child) => {
+const processChildOfChildrens = (child, childNode) => {
 	child.forEach((child) => {
 		if (child instanceof Node) {
 			fragment.appendChild(child);
