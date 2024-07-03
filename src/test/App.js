@@ -1,33 +1,21 @@
-import { olka } from "../core";
-import { createSignal, createEffect } from "../core/reactivity"; // Adjust the import path as needed
-import Show from "../core/widget/Display/Show";
-import Button from "./Button";
+import { olka, createSignal, createEffect } from "../core";
 
+//  create a a simple text update on input change component
 const App = () => {
-	const [count, setCount] = createSignal(0);
-
-	const increment = () => {
-		setCount(count() + 1); // Update count using the setter function
-	};
-
-	const decrement = () => {
-		setCount(count() - 1); // Update count using the setter function
-	};
+	const [text, setText] = createSignal("");
 
 	createEffect(() => {
-		console.log("count", count());
+		console.log("Text:", text());
 	});
+	const changeText = (e) => setText(e.target.value)
 
 	return (
-		<>
-			<p>{count()}</p>
-			<button onclick={increment}>Plus</button>
-			<button onclick={decrement}>Minus</button>
-			<Show condition={true}>
-				<Button>Click Me!</Button>
-			</Show>
-		</>
+		<div>
+			<h1>{text}</h1>
+			<input type="text" onInput={changeText} />
+		</div>
 	);
 };
+
 
 export default App;

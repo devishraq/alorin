@@ -1,4 +1,4 @@
-import { createEvents } from "../dom";
+import { createEvent } from "../dom";
 import { createEffect } from "../reactivity";
 
 const fragment = document.createDocumentFragment();
@@ -49,8 +49,10 @@ const propsStyleHandler = (elementProps) => {
 	}
 };
 
-const propsEventsHandler = (elementProps) =>
-	createEvents(elementProps, element);
+const propsEventsHandler = (elementProps) => {
+	createEvent(elementProps, element);
+}
+
 
 // Child Processing
 const processChildrens = (childrens) => {
@@ -96,11 +98,7 @@ const signalHandler = (node) => {
 	const textNode = document.createTextNode("");
 	createEffect(() => {
 		const value = node();
-		if (typeof value === "object" && value !== null) {
-			textNode.textContent = String(value);
-		} else {
-			textNode.textContent = String(value);
-		}
+		textNode.nodeValue = value;
 	});
 	fragment.appendChild(textNode);
 };
