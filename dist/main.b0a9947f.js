@@ -117,7 +117,89 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../dist/src/core/reactivity/createComputation.js":[function(require,module,exports) {
+})({"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.urlAlphabet = void 0;
+var urlAlphabet = exports.urlAlphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
+},{}],"../node_modules/nanoid/index.browser.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.random = exports.nanoid = exports.customRandom = exports.customAlphabet = void 0;
+Object.defineProperty(exports, "urlAlphabet", {
+  enumerable: true,
+  get: function () {
+    return _index.urlAlphabet;
+  }
+});
+var _index = require("./url-alphabet/index.js");
+var random = exports.random = function random(bytes) {
+  return crypto.getRandomValues(new Uint8Array(bytes));
+};
+var customRandom = exports.customRandom = function customRandom(alphabet, defaultSize, getRandom) {
+  var mask = (2 << Math.log(alphabet.length - 1) / Math.LN2) - 1;
+  var step = -~(1.6 * mask * defaultSize / alphabet.length);
+  return function () {
+    var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSize;
+    var id = '';
+    while (true) {
+      var bytes = getRandom(step);
+      var j = step;
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || '';
+        if (id.length === size) return id;
+      }
+    }
+  };
+};
+var customAlphabet = exports.customAlphabet = function customAlphabet(alphabet) {
+  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 21;
+  return customRandom(alphabet, size, random);
+};
+var nanoid = exports.nanoid = function nanoid() {
+  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 21;
+  var id = '';
+  var bytes = crypto.getRandomValues(new Uint8Array(size));
+  while (size--) {
+    id += _index.urlAlphabet[bytes[size] & 63];
+  }
+  return id;
+};
+},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../dist/src/core/dom/createEvents.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createEvents = void 0;
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+var createEvents = exports.createEvents = function createEvents(props, element) {
+  var isEventProp = function isEventProp(key) {
+    return key.startsWith("on");
+  };
+  Object.entries(props).filter(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 1),
+      key = _ref2[0];
+    return isEventProp(key);
+  }).forEach(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+      key = _ref4[0],
+      callbackHandler = _ref4[1];
+    element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
+  });
+};
+},{}],"../dist/src/core/reactivity/createComputation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -192,53 +274,53 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createElement = void 0;
-var _dom = require("../dom");
+var _nanoid = require("nanoid");
+var _createEvents = require("./createEvents");
 var _reactivity = require("../reactivity");
-var element, childNode;
-var fragment = document.createDocumentFragment();
 var createElement = exports.createElement = function createElement(tag, props) {
+  var element, childNode;
+  var fragment = document.createDocumentFragment();
+  (0, _nanoid.nanoid)(5);
   var _props = props || {};
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
-  return "function" == typeof tag ? element = tag.apply(void 0, [_props].concat(childrens)) : (element = document.createElement(tag), propsHandler(_props)), processChildrens(childrens), element.appendChild(fragment), element;
-};
-var propsHandler = function propsHandler(elementProps1) {
-    null != elementProps1 && propsAttributeHandler(elementProps1), propsEventsHandler(elementProps1);
-  },
-  propsAttributeHandler = function propsAttributeHandler(elementProps1) {
-    for (var attribute in elementProps1) "style" == attribute ? propsStyleHandler(elementProps1) : "children" === attribute || element.setAttribute(attribute, elementProps1[attribute]);
-  },
-  propsStyleHandler = function propsStyleHandler(elementProps1) {
-    "string" == typeof elementProps1.style ? element.style.cssText = elementProps1.style : Object.assign(element.style, elementProps1.style);
-  },
-  propsEventsHandler = function propsEventsHandler(elementProps1) {
-    return (0, _dom.createEvents)(elementProps1, element);
-  },
-  processChildrens = function processChildrens(childrens) {
-    childrens.forEach(function (node) {
-      if (Array.isArray(node)) processChildOfChildrens(node);else if (null == node) return;else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) node.isSignal ? signalHandler(node) : fragment.appendChild(node(elementProps));else {
+  if ("function" == typeof tag) element = tag.apply(void 0, [_props].concat(childrens));else {
+    if (element = document.createElement(tag), null != _props) for (var attribute in _props) if ("style" == attribute) "string" == typeof _props.style ? element.style.cssText = _props.style : Object.assign(element.style, _props.style);else {
+      if ("children" === attribute) continue;
+      element.setAttribute(attribute, _props[attribute]);
+    }
+    Object.keys(_props).some(function (key) {
+      return key.startsWith("on");
+    }) && (0, _createEvents.createEvents)(_props, element);
+  }
+  return childrens.forEach(function (node) {
+    if (null != node) {
+      if (Array.isArray(node)) node.forEach(function (child) {
+        if (null != child) {
+          if (child instanceof Node) fragment.appendChild(child);else if ("function" == typeof child) {
+            var childElement = child(_props);
+            childElement instanceof Node && fragment.appendChild(childElement);
+          } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
+        }
+      });else if (null == node) return;else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) {
+        if (node.isSignal) {
+          var textNode = document.createTextNode("");
+          (0, _reactivity.createEffect)(function () {
+            textNode.textContent = node();
+          }), fragment.appendChild(textNode);
+        } else {
+          var childElement = node(_props);
+          fragment.appendChild(childElement);
+        }
+      } else {
         if (void 0 === node) return;
         childNode = document.createTextNode(node), fragment.appendChild(childNode);
       }
-    });
-  },
-  processChildOfChildrens = function processChildOfChildrens(child) {
-    child.forEach(function (child) {
-      if (child instanceof Node) fragment.appendChild(child);else if ("function" == typeof child) {
-        var childElement = child(elementProps);
-        childElement instanceof Node && fragment.appendChild(childElement);
-      } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
-    });
-  },
-  signalHandler = function signalHandler(node) {
-    var textNode = document.createTextNode("");
-    (0, _reactivity.createEffect)(function () {
-      var value = node();
-      textNode.textContent = String(value);
-    }), fragment.appendChild(textNode);
-  };
-},{"../dom":"../dist/src/core/dom/index.js","../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
+    }
+  }), element.appendChild(fragment), element;
+};
+},{"nanoid":"../node_modules/nanoid/index.browser.js","./createEvents":"../dist/src/core/dom/createEvents.js","../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -268,61 +350,7 @@ Object.defineProperty(exports, "wrapper", {
 });
 var _createElement = require("./createElement");
 var _wrapper = require("./wrapper");
-},{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js"}],"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.urlAlphabet = void 0;
-var urlAlphabet = exports.urlAlphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
-},{}],"../node_modules/nanoid/index.browser.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.random = exports.nanoid = exports.customRandom = exports.customAlphabet = void 0;
-Object.defineProperty(exports, "urlAlphabet", {
-  enumerable: true,
-  get: function () {
-    return _index.urlAlphabet;
-  }
-});
-var _index = require("./url-alphabet/index.js");
-var random = exports.random = function random(bytes) {
-  return crypto.getRandomValues(new Uint8Array(bytes));
-};
-var customRandom = exports.customRandom = function customRandom(alphabet, defaultSize, getRandom) {
-  var mask = (2 << Math.log(alphabet.length - 1) / Math.LN2) - 1;
-  var step = -~(1.6 * mask * defaultSize / alphabet.length);
-  return function () {
-    var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSize;
-    var id = '';
-    while (true) {
-      var bytes = getRandom(step);
-      var j = step;
-      while (j--) {
-        id += alphabet[bytes[j] & mask] || '';
-        if (id.length === size) return id;
-      }
-    }
-  };
-};
-var customAlphabet = exports.customAlphabet = function customAlphabet(alphabet) {
-  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 21;
-  return customRandom(alphabet, size, random);
-};
-var nanoid = exports.nanoid = function nanoid() {
-  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 21;
-  var id = '';
-  var bytes = crypto.getRandomValues(new Uint8Array(size));
-  while (size--) {
-    id += _index.urlAlphabet[bytes[size] & 63];
-  }
-  return id;
-};
-},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../dist/src/core/cssInJs/generateClass.js":[function(require,module,exports) {
+},{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js"}],"../dist/src/core/cssInJs/generateClass.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
