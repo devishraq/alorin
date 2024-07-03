@@ -5,7 +5,7 @@
  * @param {Node} element - The DOM element to add event listeners to.
  */
 
-export const createEvents = (props, element) => {
+export const createEvent = (props, element) => {
 	// Helper function to check if a property key is an event handler (starts with "on").
 	const isEventProp = (key) => key.startsWith("on");
 
