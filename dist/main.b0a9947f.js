@@ -142,16 +142,15 @@ var _createComputation = require("./createComputation.js");
 var _default = exports.default = function _default(initialValue) {
   var value = initialValue,
     subscribers = new Set(),
-    getValue = function getValue() {
-      return _createComputation.currentComputation && subscribers.add(_createComputation.currentComputation), value;
-    },
     notifySubscribers = function notifySubscribers() {
       subscribers.forEach(function (subscriber) {
         return subscriber();
       });
     };
-  return getValue.isSignal = !0, [getValue, function (newValue) {
-    value = "function" == typeof newValue ? newValue(value) : newValue, notifySubscribers();
+  return [function () {
+    return _createComputation.currentComputation && subscribers.add(_createComputation.currentComputation), value;
+  }, function (newValue) {
+    value = newValue, notifySubscribers();
   }];
 };
 },{"./createComputation.js":"../dist/src/core/reactivity/createComputation.js"}],"../dist/src/core/reactivity/createEffect.js":[function(require,module,exports) {
@@ -249,34 +248,6 @@ exports.wrapper = void 0;
 var wrapper = exports.wrapper = function wrapper() {
   return document.createDocumentFragment();
 };
-},{}],"../dist/src/core/dom/createEvents.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createEvents = void 0;
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var createEvents = exports.createEvents = function createEvents(props, element) {
-  var isEventProp = function isEventProp(key) {
-    return key.startsWith("on");
-  };
-  Object.entries(props).filter(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 1),
-      key = _ref2[0];
-    return isEventProp(key);
-  }).forEach(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-      key = _ref4[0],
-      callbackHandler = _ref4[1];
-    element.addEventListener(key.slice(2).toLowerCase(), callbackHandler);
-  });
-};
 },{}],"../dist/src/core/dom/index.js":[function(require,module,exports) {
 "use strict";
 
@@ -289,12 +260,6 @@ Object.defineProperty(exports, "createElement", {
     return _createElement.createElement;
   }
 });
-Object.defineProperty(exports, "createEvents", {
-  enumerable: true,
-  get: function () {
-    return _createEvents.createEvents;
-  }
-});
 Object.defineProperty(exports, "wrapper", {
   enumerable: true,
   get: function () {
@@ -303,8 +268,7 @@ Object.defineProperty(exports, "wrapper", {
 });
 var _createElement = require("./createElement");
 var _wrapper = require("./wrapper");
-var _createEvents = require("./createEvents");
-},{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js","./createEvents":"../dist/src/core/dom/createEvents.js"}],"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
+},{"./createElement":"../dist/src/core/dom/createElement.js","./wrapper":"../dist/src/core/dom/wrapper.js"}],"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -451,18 +415,6 @@ var _createStyle = require("./createStyle");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "createEffect", {
-  enumerable: true,
-  get: function () {
-    return _reactivity.createEffect;
-  }
-});
-Object.defineProperty(exports, "createSignal", {
-  enumerable: true,
-  get: function () {
-    return _reactivity.createSignal;
-  }
-});
 Object.defineProperty(exports, "createStyle", {
   enumerable: true,
   get: function () {
@@ -473,10 +425,22 @@ exports.olka = void 0;
 var _olka = _interopRequireWildcard(require("./dom"));
 exports.olka = _olka;
 var _cssInJs = require("./cssInJs");
-var _reactivity = require("./reactivity");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js","./reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js"}],"../dist/src/core/widget/Display/Show.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _ = require("../..");
+var _default = exports.default = function _default(_ref) {
+  var condition = _ref.condition,
+    children = _ref.children;
+  return !0 == condition ? _.olka.createElement(_.olka.wrapper, null, children) : _.olka.createElement(_.olka.wrapper, null);
+};
+},{"../..":"../dist/src/core/index.js"}],"../dist/src/test/Button.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -484,66 +448,51 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../core");
+var _templateObject;
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+var Styled = (0, _core.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n    background-color: orange;\n    color: white;\n    font-size: 14px;\n    padding : 15px 15px 15px 15px;\n    border-radius: 15px;\n    outline: none;\n    border: none;\n"])));
+var _default = exports.default = function _default(_ref) {
+  var children = _ref.children;
+  return _core.olka.createElement(Styled, null, children);
+};
+},{"../core":"../dist/src/core/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _core = require("../core");
+var _reactivity = require("../core/reactivity");
+var _Show = _interopRequireDefault(require("../core/widget/Display/Show"));
+var _Button = _interopRequireDefault(require("./Button"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var Counter = function Counter(_ref) {
-    var _ref$initialCount = _ref.initialCount,
-      initialCount = _ref$initialCount === void 0 ? 0 : _ref$initialCount;
-    var _createSignal = (0, _core.createSignal)(initialCount),
-      _createSignal2 = _slicedToArray(_createSignal, 2),
-      count = _createSignal2[0],
-      setCount = _createSignal2[1];
-    return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("h1", null, "Count: ", count), _core.olka.createElement("button", {
-      onclick: function onclick() {
-        return setCount(function (c) {
-          return c + 1;
-        });
-      }
-    }, "Plus"), _core.olka.createElement("button", {
-      onclick: function onclick() {
-        return setCount(function (c) {
-          return c - 1;
-        });
-      }
-    }, "Minus"));
-  },
-  UpdateText = function UpdateText() {
-    var _createSignal3 = (0, _core.createSignal)("Hello"),
-      _createSignal4 = _slicedToArray(_createSignal3, 2),
-      text = _createSignal4[0],
-      setText = _createSignal4[1];
-    return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("input", {
-      oninput: function oninput(event) {
-        setText(event.target.value);
-      }
-    }), _core.olka.createElement("h2", {
-      style: {
-        right: 0,
-        top: 0
-      }
-    }, text));
-  },
-  AutoTimer = function AutoTimer() {
-    var _createSignal5 = (0, _core.createSignal)(0),
-      _createSignal6 = _slicedToArray(_createSignal5, 2),
-      counter = _createSignal6[0],
-      setCounter = _createSignal6[1];
-    return setInterval(function () {
-      setCounter(function (c) {
-        return c + 1;
-      });
-    }), _core.olka.createElement("h3", null, counter);
-  };
 var _default = exports.default = function _default() {
-  return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement(AutoTimer, null), _core.olka.createElement("p", null, "---------------------"), _core.olka.createElement(UpdateText, null), _core.olka.createElement("p", null, "---------------------"), _core.olka.createElement(Counter, {
-    initialCount: 5
-  }));
+  var _createSignal = (0, _reactivity.createSignal)(0),
+    _createSignal2 = _slicedToArray(_createSignal, 2),
+    count = _createSignal2[0],
+    setCount = _createSignal2[1];
+  return (0, _reactivity.createEffect)(function () {
+    console.log("count", count());
+  }), _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("p", null, count()), _core.olka.createElement("button", {
+    onclick: function onclick() {
+      setCount(count() + 1);
+    }
+  }, "Plus"), _core.olka.createElement("button", {
+    onclick: function onclick() {
+      setCount(count() - 1);
+    }
+  }, "Minus"), _core.olka.createElement(_Show.default, {
+    condition: !0
+  }, _core.olka.createElement(_Button.default, null, "Click Me!")));
 };
-},{"../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../core":"../dist/src/core/index.js","../core/reactivity":"../dist/src/core/reactivity/index.js","../core/widget/Display/Show":"../dist/src/core/widget/Display/Show.js","./Button":"../dist/src/test/Button.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/App"));
@@ -575,7 +524,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64146" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64900" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
