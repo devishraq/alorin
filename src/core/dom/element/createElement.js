@@ -5,7 +5,7 @@ export const createElement = (tag, props, ...childrens) => {
 	let _props = props || {};
 
 	const fragment = document.createDocumentFragment();
-	let element, childNode;
+	let element;
 
 	if (typeof tag === "function") {
 		element = tag(_props, ...childrens);
@@ -14,7 +14,7 @@ export const createElement = (tag, props, ...childrens) => {
 		propsHandler(_props, element);
 	}
 
-	processChildrens(childrens, fragment, childNode);
+	processChildrens(childrens, fragment);
 	element.appendChild(fragment);
 	return element;
 };
