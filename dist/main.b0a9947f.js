@@ -126,7 +126,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.attributeHandler = void 0;
 var _ = require("./");
 var attributeHandler = exports.attributeHandler = function attributeHandler(elementProps, element) {
-  for (var attribute in elementProps) "style" == attribute ? (0, _.styleHandler)(elementProps, element) : "children" === attribute || element.setAttribute(attribute, elementProps[attribute]);
+  for (var attribute in elementProps) "style" === attribute ? (0, _.styleHandler)(elementProps, element) : attribute.startsWith("on") || "children" === attribute || element.setAttribute(attribute, elementProps[attribute]);
 };
 },{"./":"../dist/src/core/dom/element/props/index.js"}],"../dist/src/core/dom/element/props/styleHandler.js":[function(require,module,exports) {
 "use strict";
@@ -263,13 +263,13 @@ var _default = exports.default = function _default(initialValue) {
     notifySubscribers = function notifySubscribers() {
       subscribers.forEach(function (subscriber) {
         return subscriber();
-      });
+      }), console.table(subscribers);
     },
     getValue = function getValue() {
       return _createComputation.currentComputation && subscribers.add(_createComputation.currentComputation), value;
     };
   return getValue.isSignal = !0, [getValue, function (newValue) {
-    value !== newValue && (value = "function" == typeof newValue ? newValue(value) : newValue, notifySubscribers());
+    value != newValue && (value = "function" == typeof newValue ? newValue(value) : newValue, notifySubscribers());
   }];
 };
 },{"./createComputation.js":"../dist/src/core/reactivity/createComputation.js"}],"../dist/src/core/reactivity/createEffect.js":[function(require,module,exports) {
@@ -316,7 +316,7 @@ var signalHandler = exports.signalHandler = function signalHandler(node, fragmen
   var textNode = document.createTextNode("");
   (0, _reactivity.createEffect)(function () {
     var value = node();
-    textNode.nodeValue = value;
+    textNode.nodeValue = value, console.log("signalHandler -> value", value);
   }), fragment.appendChild(textNode);
 };
 },{"../../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/signal/index.js":[function(require,module,exports) {
@@ -339,12 +339,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.processNestedChildren = void 0;
-var processNestedChildren = exports.processNestedChildren = function processNestedChildren(child, childNode) {
+var processNestedChildren = exports.processNestedChildren = function processNestedChildren(child, fragment) {
   child.forEach(function (child) {
-    if (child instanceof Node) fragment.appendChild(child);else if ("function" == typeof child) {
+    if (null == child) return;
+    var childToAppend = null;
+    if (child instanceof Node) childToAppend = child;else if ("function" == typeof child) {
       var childElement = child(elementProps);
-      childElement instanceof Node && fragment.appendChild(childElement);
-    } else childNode = document.createTextNode(child), fragment.appendChild(childNode);
+      childElement instanceof Node && (childToAppend = childElement);
+    } else childToAppend = document.createTextNode(String(child));
+    childToAppend && fragment.appendChild(childToAppend);
   });
 };
 },{}],"../dist/src/core/dom/element/childrens/processChildren.js":[function(require,module,exports) {
@@ -354,17 +357,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.processChildrens = void 0;
-var _index = require("../../signal/index.js");
+var _signal = require("../../signal/");
 var _processNestedChildren = require("./processNestedChildren.js");
-var processChildrens = exports.processChildrens = function processChildrens(childrens, fragment, childNode) {
+var processChildrens = exports.processChildrens = function processChildrens(childrens, fragment) {
   childrens.forEach(function (node) {
-    if (Array.isArray(node)) (0, _processNestedChildren.processNestedChildren)(node, fragment);else if (null == node) return;else if (node instanceof Node) fragment.appendChild(node);else if ("function" == typeof node) node.isSignal ? (0, _index.signalHandler)(node, fragment) : fragment.appendChild(node(elementProps));else {
-      if (void 0 === node) return;
-      childNode = document.createTextNode(node), fragment.appendChild(childNode);
-    }
+    var childNode = null;
+    null != node && (console.log("signal", node.isSignal), Array.isArray(node) ? (0, _processNestedChildren.processNestedChildren)(node, fragment) : node instanceof Node ? childNode = node : "function" == typeof node ? node.isSignal ? (console.log("processChildrens -> node", node()), childNode = (0, _signal.signalHandler)(node, fragment)) : (console.log("processChildrens -> node", node()), childNode = node(elementProps)) : childNode = document.createTextNode(String(node)), childNode && fragment.appendChild(childNode));
   });
 };
-},{"../../signal/index.js":"../dist/src/core/dom/signal/index.js","./processNestedChildren.js":"../dist/src/core/dom/element/childrens/processNestedChildren.js"}],"../dist/src/core/dom/element/childrens/index.js":[function(require,module,exports) {
+},{"../../signal/":"../dist/src/core/dom/signal/index.js","./processNestedChildren.js":"../dist/src/core/dom/element/childrens/processNestedChildren.js"}],"../dist/src/core/dom/element/childrens/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -395,13 +396,12 @@ var _props2 = require("./props");
 var _childrens = require("./childrens");
 var createElement = exports.createElement = function createElement(tag, props) {
   var element,
-    childNode,
     _props = props || {},
     fragment = document.createDocumentFragment();
   for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     childrens[_key - 2] = arguments[_key];
   }
-  return "function" == typeof tag ? element = tag.apply(void 0, [_props].concat(childrens)) : (0, _props2.propsHandler)(_props, element = document.createElement(tag)), (0, _childrens.processChildrens)(childrens, fragment, childNode), element.appendChild(fragment), element;
+  return "function" == typeof tag ? element = tag.apply(void 0, [_props].concat(childrens)) : (0, _props2.propsHandler)(_props, element = document.createElement(tag)), (0, _childrens.processChildrens)(childrens, fragment), element.appendChild(fragment), element;
 };
 },{"./props":"../dist/src/core/dom/element/props/index.js","./childrens":"../dist/src/core/dom/element/childrens/index.js"}],"../dist/src/core/dom/wrapper/wrapper.js":[function(require,module,exports) {
 "use strict";
@@ -682,6 +682,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../core");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -689,18 +693,43 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var _default = exports.default = function _default() {
-  var _createSignal = (0, _core.createSignal)(""),
+  var _createSignal = (0, _core.createSignal)(["todo 1", "todo 2", "todo 3", "todo 4", "todo 5"]),
     _createSignal2 = _slicedToArray(_createSignal, 2),
-    text = _createSignal2[0],
-    setText = _createSignal2[1];
-  return (0, _core.createEffect)(function () {
-    console.log("Text:", text());
-  }), _core.olka.createElement("div", null, _core.olka.createElement("h1", null, text), _core.olka.createElement("input", {
+    todos = _createSignal2[0],
+    setTodos = _createSignal2[1],
+    _createSignal3 = (0, _core.createSignal)(""),
+    _createSignal4 = _slicedToArray(_createSignal3, 2),
+    newTodo = _createSignal4[0],
+    setNewTodo = _createSignal4[1];
+  (0, _core.createEffect)(function () {
+    console.log("Todos:", todos());
+  });
+  var Todo = function Todo() {
+    return _core.olka.createElement("ul", null, todos().map(function (todo, index) {
+      return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("li", {
+        key: index
+      }, todo));
+    }));
+  };
+  return _core.olka.createElement("div", null, _core.olka.createElement("button", {
+    style: {
+      position: "absoulute",
+      right: "0",
+      top: "0",
+      zIndex: "100"
+    },
+    onClick: Todo
+  }, "re-render the ul"), _core.olka.createElement("input", {
     type: "text",
+    value: newTodo(),
     onInput: function onInput(e) {
-      return setText(e.target.value);
+      setNewTodo(e.target.value);
     }
-  }));
+  }), _core.olka.createElement("button", {
+    onClick: function onClick() {
+      setTodos([].concat(_toConsumableArray(todos()), [newTodo()])), setNewTodo("");
+    }
+  }, "Add Todo"), _core.olka.createElement(Todo, null));
 };
 },{"../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
@@ -734,7 +763,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55594" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57733" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

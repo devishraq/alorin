@@ -1,4 +1,3 @@
-
 {
     "minify": true,
     "jsc": {
@@ -11,16 +10,16 @@
             "decorators": true
         },
         "transform": {
-            "react":{
+            "react": {
                 "pragma": "olka.createElement",
                 "pragmaFrag": "olka.wrapper"
             }
-        }
-        ,
+        },
         "target": "es2016",
         "preserveAllComments": false
-     },
+    },
     "module": {
-        "type": "es6"
+        "type": "es6",
+        "strict": true
     }
 }

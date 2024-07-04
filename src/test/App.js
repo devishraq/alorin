@@ -1,21 +1,52 @@
 import { olka, createSignal, createEffect } from "../core";
 
-//  create a a simple text update on input change component
 const App = () => {
-	const [text, setText] = createSignal("");
+	const [todos, setTodos] = createSignal(['todo 1', 'todo 2', 'todo 3', 'todo 4', 'todo 5']);
+	const [newTodo, setNewTodo] = createSignal("");
 
+	const addTodo = () => {
+		setTodos([...todos(), newTodo()]);
+		setNewTodo("");
+	};
+
+	const inputHandler = (e) => {
+		setNewTodo(e.target.value);
+	}
 	createEffect(() => {
-		console.log("Text:", text());
+		console.log("Todos:", todos());
 	});
-	const changeText = (e) => setText(e.target.value)
+
+
+	const Todo = () => {
+		return (<ul>
+			{todos().map((todo, index) => (
+				<>
+					<li key={index}>{todo}</li>
+				</>
+			))}
+		</ul>
+		)
+	}
 
 	return (
 		<div>
-			<h1>{text}</h1>
-			<input type="text" onInput={changeText} />
+			<button style={{
+				'position': 'absoulute',
+				'right': '0',
+				'top': '0',
+				'zIndex': '100'
+			}} onClick={Todo}>re-render the ul</button>
+			<input
+				type="text"
+				value={newTodo()}
+				onInput={inputHandler}
+			/>
+			<button onClick={addTodo}>Add Todo</button>
+			<Todo />
 		</div>
 	);
-};
+}
+
 
 
 export default App;

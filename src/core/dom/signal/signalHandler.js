@@ -5,6 +5,7 @@ export const signalHandler = (node, fragment) => {
     createEffect(() => {
         const value = node();
         textNode.nodeValue = value;
+        console.log("signalHandler -> value", value);
     });
     fragment.appendChild(textNode);
 };

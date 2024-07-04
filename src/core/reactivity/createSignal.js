@@ -6,6 +6,7 @@ const createSignal = (initialValue) => {
 
 	const notifySubscribers = () => {
 		subscribers.forEach((subscriber) => subscriber());
+		console.table(subscribers);
 	};
 
 	const getValue = () => {
@@ -16,26 +17,20 @@ const createSignal = (initialValue) => {
 	};
 
 	const setValue = (newValue) => {
-		if (value === newValue) {
+		if (value == newValue) {
 			return;
-		}
-		else if (typeof newValue === "function") {
-			value = newValue(value);
-		}
-		else {
-			value = newValue;
+		} else {
+			typeof newValue === "function"
+				? (value = newValue(value))
+				: (value = newValue);
 		}
 
 		notifySubscribers();
 	};
 
-
 	getValue.isSignal = true;
 
-
 	return [getValue, setValue];
-
-
 };
 
 export default createSignal;
