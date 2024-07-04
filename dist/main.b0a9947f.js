@@ -263,13 +263,22 @@ var _default = exports.default = function _default(initialValue) {
     notifySubscribers = function notifySubscribers() {
       subscribers.forEach(function (subscriber) {
         return subscriber();
-      }), console.table(subscribers);
+      });
     },
     getValue = function getValue() {
       return _createComputation.currentComputation && subscribers.add(_createComputation.currentComputation), value;
     };
   return getValue.isSignal = !0, [getValue, function (newValue) {
-    value != newValue && (value = "function" == typeof newValue ? newValue(value) : newValue, notifySubscribers());
+    switch (newValue) {
+      case value == newValue:
+        return;
+      case "function" == typeof newValue:
+        value = newValue(value);
+        break;
+      default:
+        value = newValue;
+    }
+    notifySubscribers();
   }];
 };
 },{"./createComputation.js":"../dist/src/core/reactivity/createComputation.js"}],"../dist/src/core/reactivity/createEffect.js":[function(require,module,exports) {
@@ -316,7 +325,7 @@ var signalHandler = exports.signalHandler = function signalHandler(node, fragmen
   var textNode = document.createTextNode("");
   (0, _reactivity.createEffect)(function () {
     var value = node();
-    textNode.nodeValue = value, console.log("signalHandler -> value", value);
+    console.log("From signalHandler", value), textNode.nodeValue = value;
   }), fragment.appendChild(textNode);
 };
 },{"../../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/signal/index.js":[function(require,module,exports) {
@@ -339,18 +348,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.processNestedChildren = void 0;
+require("../../signal/");
 var processNestedChildren = exports.processNestedChildren = function processNestedChildren(child, fragment) {
   child.forEach(function (child) {
     if (null == child) return;
     var childToAppend = null;
-    if (child instanceof Node) childToAppend = child;else if ("function" == typeof child) {
-      var childElement = child(elementProps);
-      childElement instanceof Node && (childToAppend = childElement);
-    } else childToAppend = document.createTextNode(String(child));
-    childToAppend && fragment.appendChild(childToAppend);
+    child instanceof Node && (console.log(child), childToAppend = child), childToAppend && fragment.appendChild(childToAppend);
   });
 };
-},{}],"../dist/src/core/dom/element/childrens/processChildren.js":[function(require,module,exports) {
+},{"../../signal/":"../dist/src/core/dom/signal/index.js"}],"../dist/src/core/dom/element/childrens/processChildren.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -362,7 +368,7 @@ var _processNestedChildren = require("./processNestedChildren.js");
 var processChildrens = exports.processChildrens = function processChildrens(childrens, fragment) {
   childrens.forEach(function (node) {
     var childNode = null;
-    null != node && (console.log("signal", node.isSignal), Array.isArray(node) ? (0, _processNestedChildren.processNestedChildren)(node, fragment) : node instanceof Node ? childNode = node : "function" == typeof node ? node.isSignal ? (console.log("processChildrens -> node", node()), childNode = (0, _signal.signalHandler)(node, fragment)) : (console.log("processChildrens -> node", node()), childNode = node(elementProps)) : childNode = document.createTextNode(String(node)), childNode && fragment.appendChild(childNode));
+    null != node && (Array.isArray(node) ? (0, _processNestedChildren.processNestedChildren)(node, fragment) : node instanceof Node ? childNode = node : childNode = "function" == typeof node ? node.isSignal ? (0, _signal.signalHandler)(node, fragment) : node(elementProps) : document.createTextNode(String(node)), childNode && fragment.appendChild(childNode));
   });
 };
 },{"../../signal/":"../dist/src/core/dom/signal/index.js","./processNestedChildren.js":"../dist/src/core/dom/element/childrens/processNestedChildren.js"}],"../dist/src/core/dom/element/childrens/index.js":[function(require,module,exports) {
@@ -674,7 +680,7 @@ var _cssInJs = require("./cssInJs");
 var _reactivity = require("./reactivity");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js","./reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./cssInJs":"../dist/src/core/cssInJs/index.js","./reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/test/Button.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -682,6 +688,23 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _core = require("../core");
+var _templateObject;
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+var Styled = (0, _core.createStyle)("button")(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n    background-color: orange;\n    color: white;\n    font-size: 14px;\n    padding : 15px 15px 15px 15px;\n    border-radius: 15px;\n    outline: none;\n    border: none;\n"])));
+var _default = exports.default = function _default(_ref) {
+  var children = _ref.children;
+  return _core.olka.createElement(Styled, null, children);
+};
+},{"../core":"../dist/src/core/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _core = require("../core");
+var _Button = _interopRequireDefault(require("./Button"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
@@ -697,41 +720,44 @@ var _default = exports.default = function _default() {
     _createSignal2 = _slicedToArray(_createSignal, 2),
     todos = _createSignal2[0],
     setTodos = _createSignal2[1],
-    _createSignal3 = (0, _core.createSignal)(""),
+    _createSignal3 = (0, _core.createSignal)(0),
     _createSignal4 = _slicedToArray(_createSignal3, 2),
-    newTodo = _createSignal4[0],
-    setNewTodo = _createSignal4[1];
-  (0, _core.createEffect)(function () {
+    counter = _createSignal4[0],
+    setCounter = _createSignal4[1],
+    _createSignal5 = (0, _core.createSignal)(""),
+    _createSignal6 = _slicedToArray(_createSignal5, 2),
+    newTodo = _createSignal6[0],
+    setNewTodo = _createSignal6[1];
+  return (0, _core.createEffect)(function () {
     console.log("Todos:", todos());
-  });
-  var Todo = function Todo() {
-    return _core.olka.createElement("ul", null, todos().map(function (todo, index) {
-      return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("li", {
-        key: index
-      }, todo));
-    }));
-  };
-  return _core.olka.createElement("div", null, _core.olka.createElement("button", {
-    style: {
-      position: "absoulute",
-      right: "0",
-      top: "0",
-      zIndex: "100"
-    },
-    onClick: Todo
-  }, "re-render the ul"), _core.olka.createElement("input", {
+  }), _core.olka.createElement("div", null, _core.olka.createElement("input", {
     type: "text",
     value: newTodo(),
     onInput: function onInput(e) {
-      setNewTodo(e.target.value);
+      setNewTodo(e.target.value), setCounter(e.target.value);
     }
   }), _core.olka.createElement("button", {
     onClick: function onClick() {
-      setTodos([].concat(_toConsumableArray(todos()), [newTodo()])), setNewTodo("");
+      setTodos(function (prevState) {
+        return [].concat(_toConsumableArray(prevState()), [newTodo()]);
+      }), setNewTodo("");
     }
-  }, "Add Todo"), _core.olka.createElement(Todo, null));
+  }, "Add Todo"), _core.olka.createElement("ul", null, todos().map(function (todo, index) {
+    return _core.olka.createElement(_core.olka.wrapper, null, _core.olka.createElement("div", null, counter, _core.olka.createElement("li", {
+      key: index
+    }, todo)), _core.olka.createElement(_Button.default, null, "Click Me!"));
+  })), _core.olka.createElement("ol", null, _core.olka.createElement("li", null, _core.olka.createElement("a", {
+    target: "_blank",
+    href: "google.com"
+  }, _core.olka.createElement("span", null, "Hey Howdy1"))), _core.olka.createElement("li", null, _core.olka.createElement("a", {
+    target: "_blank",
+    href: "google.com"
+  }, _core.olka.createElement("span", null, "Hey Howdy2"))), _core.olka.createElement("li", null, _core.olka.createElement("a", {
+    target: "_blank",
+    href: "google.com"
+  }, _core.olka.createElement("span", null, "Hey Howdy3")))));
 };
-},{"../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
+},{"../core":"../dist/src/core/index.js","./Button":"../dist/src/test/Button.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _App = _interopRequireDefault(require("./test/App"));
@@ -763,7 +789,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57733" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62551" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
