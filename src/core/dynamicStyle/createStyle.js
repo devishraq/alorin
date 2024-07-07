@@ -1,4 +1,4 @@
-import { createElement } from "./../dom/createElement";
+import { createElement } from "./../dom";
 import { generateClass } from "./generateClass";
 import { insertRule } from "./insertRule";
 
