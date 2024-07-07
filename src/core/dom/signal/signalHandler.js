@@ -3,9 +3,9 @@ import { createEffect } from '../../reactivity';
 export const signalHandler = (node, fragment) => {
     const textNode = document.createTextNode("");
     createEffect(() => {
-        const value = node();
+        const value = String(node());
+        console.log('from dignal handler', value);
         textNode.nodeValue = value;
-        console.log("signalHandler -> value", value);
     });
     fragment.appendChild(textNode);
 };

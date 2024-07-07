@@ -1,1 +1,0 @@
-import{nanoid}from"nanoid";export const generateClass=tag=>`__${tag}__${nanoid(5)} `;

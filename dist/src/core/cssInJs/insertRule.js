@@ -1,1 +1,0 @@
-export const insertRule=(className,styles)=>{let styleSheet;if(!(styleSheet=document.styleSheets[0])){let style=document.createElement("style");document.head.appendChild(style),styleSheet=style.sheet}let formattedStyles=styles.replace(/\n/g,"");styleSheet.insertRule(`.${className} { ${formattedStyles} }`,styleSheet.cssRules.length)};
