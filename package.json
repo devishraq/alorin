@@ -1,20 +1,33 @@
 {
-	"name": "compilation_test_jsx",
-	"version": "1.0.0",
-	"description": "",
+	"name": "alorin",
+	"version": "0.0.1",
+	"description": "Alorin is a high level super reactive js framerwork focused on performance and simplicity.",
 	"main": "index.js",
 	"scripts": {
-		"dev": "npm run build:swc && parcel serve ./public/index.html ./dist",
-		"build:swc": "swc ./src -d ./dist"
+		"compiler": "npx swc src -d dist --watch",
+		"server": "parcel ./src/index.html"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"alorin",
+		"reactive",
+		"framework",
+		"js",
+		"javascript",
+		"reactivity",
+		"performance",
+		"simple",
+		"fast",
+		"fine-grained-reactivity",
+		"js framework for begginers"
+	],
+	"author": "Ishraq Tanvir",
 	"license": "ISC",
 	"devDependencies": {
 		"@swc/cli": "^0.3.12",
 		"@swc/core": "^1.5.7"
 	},
 	"dependencies": {
+		"lodash": "^4.17.21",
 		"nanoid": "^5.0.7"
 	},
 	"@parcel/transformer-css": {
