@@ -1,15 +1,15 @@
 {
-	"compilerOptions": {
-		"jsx": "preserve",
-		"target": "es6",
-		"module": "commonjs",
-		"checkJs": true,
-		"allowJs": true
-	},
-	"include": [
-		"./**/*"
-	],
-	"exclude": [
-		"node_modules"
-	]
+    "compilerOptions": {
+        "jsx": "preserve",
+        "target": "ESNext",
+        "module": "commonjs",
+        "checkJs": true,
+        "allowJs": true
+    },
+    "include": [
+        "./**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

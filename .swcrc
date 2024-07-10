@@ -15,7 +15,7 @@
                 "pragmaFrag": "olka.wrapper"
             }
         },
-        "target": "es2016",
+        "target": "esnext",
         "preserveAllComments": false
     },
     "module": {
