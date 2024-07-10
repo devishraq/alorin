@@ -1,12 +1,12 @@
 let currentComputation = null;
 
 const createComputation = (computation) => {
-	const executeComputation = () => {
-		currentComputation = executeComputation;
+	const execeuteComputation = () => {
+		currentComputation = computation;
 		computation();
 		currentComputation = null;
-	};
-	executeComputation();
+	}
+	execeuteComputation();
 };
 
 export { createComputation, currentComputation };
