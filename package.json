@@ -3,9 +3,11 @@
 	"version": "0.0.1",
 	"description": "Alorin is a high level super reactive js framerwork focused on performance and simplicity.",
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
 		"compiler": "npx swc src -d dist --watch",
-		"server": "parcel ./src/index.html"
+		"server": "parcel ./src/index.html",
+		"lazy-server": "parcel ./src/index.html --lazy"
 	},
 	"keywords": [
 		"alorin",
@@ -27,6 +29,7 @@
 		"@swc/core": "^1.5.7"
 	},
 	"dependencies": {
+		"chokidar": "^3.6.0",
 		"lodash": "^4.17.21",
 		"nanoid": "^5.0.7"
 	},
