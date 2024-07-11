@@ -2,7 +2,7 @@
     "minify": true,
     "jsc": {
         "minify": {
-            "compress": true // equivalent to {}
+            "compress": true
         },
         "parser": {
             "syntax": "ecmascript",
@@ -11,8 +11,9 @@
         },
         "transform": {
             "react": {
-                "pragma": "olka.createElement",
-                "pragmaFrag": "olka.wrapper"
+                "pragma": "alorin.createElement",
+                "pragmaFrag": "alorin.wrapper",
+                "refresh": true
             }
         },
         "target": "esnext",
