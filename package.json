@@ -1,6 +1,6 @@
 {
 	"name": "alorin",
-	"version": "0.0.1",
+	"version": "0.1",
 	"description": "Alorin is a high level super reactive js framerwork focused on performance and simplicity.",
 	"main": "index.js",
 	"type": "module",
@@ -20,7 +20,7 @@
 		"simple",
 		"fast",
 		"fine-grained-reactivity",
-		"js framework for begginers"
+		"js-framework-for-begginers"
 	],
 	"author": "Ishraq Tanvir",
 	"license": "ISC",
