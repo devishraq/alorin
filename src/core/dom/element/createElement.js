@@ -11,10 +11,10 @@ export const createElement = (tag, props, ...childrens) => {
 		element = tag(_props, ...childrens);
 	} else {
 		element = document.createElement(tag);
-		propsHandler(_props, element);
+        propsHandler(_props, element);
 	}
 
 	processChildrens(childrens, fragment);
-	element.appendChild(fragment);
+	if(element) element.appendChild(fragment);
 	return element;
 };

@@ -1,5 +1,5 @@
 // import signalHandler
-import { signalHandler } from "../../../reactivity";
+// import { signalHandler } from "../../../reactivity";
 
 export const processNestedChildren = (child, fragment) => {
 

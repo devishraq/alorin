@@ -14,7 +14,7 @@ export const processChildrens = (childrens, fragment) => {
         else if (node instanceof Node) childNode = node;
         else if (typeof node === "function") {
             if (node.isSignal) childNode = signalHandler(node, fragment);
-            else childNode = node(elementProps);
+            else childNode = node();
         }
         else childNode = document.createTextNode(String(node));
 

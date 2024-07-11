@@ -1,12 +1,18 @@
-import { olka } from "../..";
+import { alorin } from "../..";
 
-const Show = ({ condition, children }) => {
-	// If the condition is false, return null. Like something to remvoe the component from the DOM.
-	if (condition == true) {
-		return <>{children}</>;
-	}
-	// If the condition is true, return the children.
-	return <></>;
+/**
+ * A utility display component for conditionally rendering childrens based on a given condition.
+ *
+ * @module Show
+ * @function
+ * @param {Object} props - The properties object.
+ * @param {boolean} [props.condition=true] - Determines if the children should be rendered.
+ * @param {any} [props.children=null] - The content to be conditionally rendered.
+ * @returns {HTMLElement|null} The children if the condition is true; otherwise, null.
+ */
+
+export const Show = (props) => {
+	const { condition = true, children = null } = props;
+
+	return condition == true ? <>{children}</> : null;
 };
-
-export default Show;

@@ -13,6 +13,7 @@ export const styleHandler = (elementProps, element) => {
         elemePropStyle = elementProps.style;
 
 
+    // @ts-ignore
     if (typeof elemStyle === "string") elemStyle.cssText = elemePropStyle;
     else Object.assign(elemStyle, elemePropStyle);
 
