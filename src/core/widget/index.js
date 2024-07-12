@@ -1,3 +1,3 @@
-export { Show } from './Display'
+export { Display } from "./Display";
 
-export { For } from './For'
+export { For } from "./For";
