@@ -1,5 +1,5 @@
 import App from "./test/App";
-import { olka } from "./core";
+import { alorin } from "./core";
 
 const rootDOM = document.querySelector("#root");
 

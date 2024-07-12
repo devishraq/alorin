@@ -1,4 +1,4 @@
-import { olka } from "../core";
+import { alorin } from "../core";
 import { createStyle } from "../core";
 
 const Styled = createStyle("button")`
