@@ -14,8 +14,8 @@
  */
 
 import { styleHandler } from "./";
-import { createEffect } from "../../../reactivity";
-import { signalHandler } from "../../signal";
+// import { createEffect } from "../../../reactivity";
+// import { signalHandler } from "../../signal";
 
 export const attributeHandler = (elementProps, element) => {
 	for (const attribute in elementProps) {
@@ -26,10 +26,12 @@ export const attributeHandler = (elementProps, element) => {
 			attribute === "children" ||
 			attribute.startsWith("on")
 		)
-			null;
-		// If the attribute is 'style', delegate to the styleHandler. else, set the attribute directly.
-		else if (attribute === "style") {
-			createEffect(() => styleHandler(elementProps, element));
-		} else element.setAttribute(attribute, elementProps[attribute]);
+            null;
+            
+
+            // If the attribute is 'style', delegate to the styleHandler. else, set the attribute directly.
+        else if (attribute === "style") styleHandler(elementProps, element);
+        else if (attribute === 'className') element.setAttribute('class', elementProps[attribute]);
+		else element.setAttribute(attribute, elementProps[attribute]);
 	}
 };
