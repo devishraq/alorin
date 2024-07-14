@@ -10,8 +10,8 @@ import { alorin, createEffect } from "../..";
  * @param {number | null} [props.delay = 0] - Delay before rendering (not implemented)
  * @param {import("@swc/core").JSXElement | null} [props.children = null] - The content to be conditionally rendered.
  * @param {import("@swc/core").JSXElement | null} [props.fallback = null] - Fallback content if condition is false
- * @param {Function | null} [props.onShow = () => {}] - Callback when content is shown (not implemented)
- * @param {Function | null} [props.onHide = () => {}] - Callback when content is hidden (not implemented)
+ * @param {Function | null} [props.onShow = () => {}] - Callback when content is shown
+ * @param {Function | null} [props.onHide = () => {}] - Callback when content is hidden
  * @returns {import("@swc/core").JSXElement | null} The children if the condition is true; otherwise, fallback or null.
  */
 export const Display = (props) => {
