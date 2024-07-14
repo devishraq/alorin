@@ -7,7 +7,7 @@ export const processNestedChildren = (child, fragment) => {
         let childToAppend = null;
 
         // If child is null or undefined, ignore it
-        if (child === null || child === undefined) return;
+        if (child === null || child === undefined || child === false || child === true) return;
 
         // If child is an array, process it recursively
         if (child instanceof Node) {

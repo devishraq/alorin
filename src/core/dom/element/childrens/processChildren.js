@@ -1,5 +1,5 @@
 import { signalHandler } from "../../signal/";
-import { createEffect } from "../../../reactivity/";
+import { createEffect } from "../../../reactivity/signal";
 import { processNestedChildren } from "./processNestedChildren.js";
 
 export const processChildrens = (childrens, fragment) => {
@@ -8,7 +8,7 @@ export const processChildrens = (childrens, fragment) => {
         let childNode = null;
 
         // If node is null or undefined, ignoe it
-        if (node === null || node === undefined) return;
+        if (node === null || node === undefined || node === false || node === true) return;
 
         if (Array.isArray(node)) processNestedChildren(node, fragment);
         else if (node instanceof Node) childNode = node;
