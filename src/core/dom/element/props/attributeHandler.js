@@ -18,6 +18,24 @@ import { styleHandler } from "./";
 // import { signalHandler } from "../../signal";
 
 export const attributeHandler = (elementProps, element) => {
+	const booleanAttributes = new Set([
+		"checked",
+		"selected",
+		"disabled",
+		"readonly",
+		"required",
+		"multiple",
+		"autofocus",
+		"hidden",
+		"contenteditable",
+		"spellcheck",
+		"draggable",
+		"open",
+		"async",
+		"defer",
+		"reversed",
+	]);
+
 	for (const attribute in elementProps) {
 		// If the attribute is null or undefined or event, ignore it.
 		if (
@@ -26,12 +44,20 @@ export const attributeHandler = (elementProps, element) => {
 			attribute === "children" ||
 			attribute.startsWith("on")
 		)
-            null;
-            
-
-            // If the attribute is 'style', delegate to the styleHandler. else, set the attribute directly.
-        else if (attribute === "style") styleHandler(elementProps, element);
-        else if (attribute === 'className') element.setAttribute('class', elementProps[attribute]);
+			null;
+		// If the attribute is 'style', delegate to the styleHandler. else, set the attribute directly.
+		else if (attribute === "style")
+			styleHandler(elementProps, element);
+		else if (attribute === "className")
+			element.setAttribute("class", elementProps[attribute]);
+		else if (booleanAttributes.has(attribute)) {
+			if (elementProps[attribute])
+				element.setAttribute(attribute, "");
+			else element.removeAttribute(attribute);
+		}
+        else if (elementProps[attribute] == null || elementProps[attribute] == undefined ) {
+            element.setAttribute(attribute, false);
+        }
 		else element.setAttribute(attribute, elementProps[attribute]);
 	}
 };
