@@ -1,3 +1,5 @@
+import { newElement } from "../../utils";
+
 /**
  *
  * This module exports the `insertRule` function, which is used to insert a new CSS rule into the first stylesheet of the document.
@@ -11,16 +13,14 @@
  */
 
 export const insertRule = (className, styles) => {
-	// Get the first stylesheet in the document.
-	let styleSheet;
-
+    
+	// Get the first stylesheet in the document	
 	// Check if there is a stylesheet in the document. If not, create a new one.
-	styleSheet = document.styleSheets[0];
+	let styleSheet = document.styleSheets[0];
 
-	// If there is no stylesheet in the document, create a new one.
 	if (!styleSheet) {
 		// Create a new style element and append it to the head of the document.
-		const style = document.createElement("style");
+		let style = newElement("style");
 		document.head.appendChild(style);
 		styleSheet = style.sheet;
 	}
