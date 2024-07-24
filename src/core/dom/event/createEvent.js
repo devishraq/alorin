@@ -5,23 +5,22 @@
  * @param {Node} element - The DOM element to add event listeners to.
  */
 
-export const createEvent = (props, element) => {
-	// Helper function to check if a property key is an event handler (starts with "on").
-	const isEventProp = (key) => key.startsWith("on");
+import { isArr } from "../../../utils/checkers";
 
-	// Filter the props to get an array of [key, value] pairs for the event handlers.
+export const createEvent = (props, element) => {
+ 	// Filter the props to get an array of [key, value] pairs for the event handlers.
 	const events = Object.entries(props).filter(([key]) =>
-		isEventProp(key)
+		key.startsWith("on")
 	);
 	// For each event handler, add an event listener to the element.
 	// The event type is the key without the "on" prefix and in lowercase.
 	// The event listener calls the callback handler when the event occurs.
 	events.forEach(([key, callbackHandler]) => {
-		if (Array.isArray(callbackHandler)) {
-			callbackHandler.forEach((cb) => {
+		if (isArr(callbackHandler)) {
+			callbackHandler.forEach((callback) => {
 				element.addEventListener(
 					key.toLowerCase().slice(2),
-					cb
+					callback
 				);
 			});
 		} else {
