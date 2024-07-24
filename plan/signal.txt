@@ -1,24 +1,20 @@
-Core Component:-
-
 a. Signal Creation:
-[Initialize Value] -> [Create Subscriber List] -> [Define Get/Set Methods]
+[Initialize Value] -> [Create Subscriber List] -> [Define Get/Set Methods] --- Done
 
 b. Computed Creation:
 [Define Computation] -> [Create Signal] -> [Set Up Auto-Recompute]
 
 c. Effect Creation:
-[Define Effect] .
--> [Run Initially] -> [Track Dependencies]
+[Define Effect] -> [Run Initially] -> [Track Dependencies] --- Done
 
 d. Dependency Tracking:
-[Read Signal] -> [Current Effect?] -> [Yes: Add to Dependencies] -> [No: Just Return Value]
+[Read Signal] -> [Current Effect?] -> [Yes: Add to Dependencies] -> [No: Just Return Value] --- Done
 
 e. Signal Update:
-[Set New Value] -> [Value Changed?] -> [Yes: Notify Subscribers] -> [No: Do Nothing]
+[Set New Value] -> [Value Changed?] -> [Yes: Notify Subscribers] -> [No: Do Nothing] --- Done
 
 f. Update Propagation:
-[Notify Subscriber] -> [Is Computed?] -> [Yes: Recompute] -> [No: Run Effect]
--> [Notify Its Subscribers]
+[Notify Subscriber] -> [Is Computed?] -> [Yes: Recompute] -> [No: Run Effect] -> [Notify Its Subscribers]
 
 g. Batching (Optional):
 [Multiple Updates] -> [Collect Changes] -> [Sort Topologically] -> [Apply All at Once]
