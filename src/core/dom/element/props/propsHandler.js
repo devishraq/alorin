@@ -8,7 +8,7 @@
 import { eventHandler, attributeHandler } from "./";
 
 export const propsHandler = (elementProps, element) => {
-	if (elementProps != null) attributeHandler(elementProps, element);
+	if (elementProps) attributeHandler(elementProps, element);
 
 	eventHandler(elementProps, element);
 };

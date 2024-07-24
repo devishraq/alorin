@@ -13,6 +13,7 @@
  *
  */
 
+import { isNUB } from "../../../../utils/checkers";
 import { styleHandler } from "./";
 // import { createEffect } from "../../../reactivity";
 // import { signalHandler } from "../../signal";
@@ -39,25 +40,24 @@ export const attributeHandler = (elementProps, element) => {
 	for (const attribute in elementProps) {
 		// If the attribute is null or undefined or event, ignore it.
 		if (
-			attribute === null ||
-			attribute === undefined ||
+			isNUB(attribute) ||
 			attribute === "children" ||
 			attribute.startsWith("on")
 		)
 			null;
 		// If the attribute is 'style', delegate to the styleHandler. else, set the attribute directly.
-		else if (attribute === "style")
-			styleHandler(elementProps, element);
+		else if (attribute === "style") styleHandler(elementProps, element);
 		else if (attribute === "className")
 			element.setAttribute("class", elementProps[attribute]);
 		else if (booleanAttributes.has(attribute)) {
-			if (elementProps[attribute])
-				element.setAttribute(attribute, "");
-			else element.removeAttribute(attribute);
+			elementProps[attribute]
+				? element.setAttribute(attribute, "")
+				: element.removeAttribute(attribute);
 		}
-        else if (elementProps[attribute] == null || elementProps[attribute] == undefined ) {
-            element.setAttribute(attribute, false);
-        }
-		else element.setAttribute(attribute, elementProps[attribute]);
+
+		// This is code can be infected ...... have to change to the earlier version if it goes f**ked up!
+		else if (isNUB(elementProps[attribute])) {
+			element.setAttribute(attribute, false);
+		} else element.setAttribute(attribute, elementProps[attribute]);
 	}
 };

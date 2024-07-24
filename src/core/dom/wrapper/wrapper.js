@@ -1,3 +1,5 @@
+import { newDFrag } from "../../../utils";
+
 /**
  * Wraps multiple *Olka* elements into a single DocumentFragment.
  *
@@ -5,10 +7,8 @@
  * @returns {DocumentFragment} The newly created DocumentFragment containing all the elements.
  */
 export const wrapper = (...childrens) => {
-  // Create a new document fragment.
-  const fragment = document.createDocumentFragment();
-  // Return the document fragment containing all the elements.
-  return fragment;
+	// Create a new document fragment.
+	const fragment = newDFrag();
+	// Return the document fragment containing all the elements.
+	return fragment;
 };
-
- 
