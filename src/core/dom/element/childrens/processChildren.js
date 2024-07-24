@@ -1,24 +1,36 @@
 import { signalHandler } from "../../signal/";
 import { createEffect } from "../../../reactivity/signal";
 import { processNestedChildren } from "./processNestedChildren.js";
+import { isArr, isFunc, isNode, isNUB, newTextNode } from "../../../../utils";
 
 export const processChildrens = (childrens, fragment) => {
-    childrens.forEach((node) => {
+	childrens.forEach((node) => {
+		let childNode = null;
 
-        let childNode = null;
+		// If node is null or undefined or bool, f**k it
+		if (isNUB(node)) return;
 
-        // If node is null or undefined, ignoe it
-        if (node === null || node === undefined || node === false || node === true) return;
+		switch (true) {
+			case isArr(node):
+				processNestedChildren(node, fragment);
+				break;
 
-        if (Array.isArray(node)) processNestedChildren(node, fragment);
-        else if (node instanceof Node) childNode = node;
-        else if (typeof node === "function") {
-            if (node.isSignal) childNode = signalHandler(node, fragment);
-            else childNode = node();
-        }
-        else childNode = document.createTextNode(String(node));
+			case isNode(node):
+				childNode = node;
+				break;
 
-        // If childNode is not null or undefined, append it to the fragment
-        if (childNode) fragment.appendChild(childNode);
-    });
+			case isFunc(node):
+				if (node.isSignal)
+					childNode = signalHandler(node, fragment);
+				else childNode = node();
+				break;
+
+			default:
+				childNode = newTextNode(node);
+				break;
+		}
+
+		// If childNode is not null or undefined, append it to the fragment
+		if (childNode) fragment.appendChild(childNode);
+	});
 };
