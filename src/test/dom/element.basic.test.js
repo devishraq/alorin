@@ -4,7 +4,7 @@ import { alorin } from "../../core";
 import { jest } from "@jest/globals";
 // swc transpiler automatically converts the JSX syntax to the createElement function like this `alorin.createElement("div", null, "Hello")`
 
-describe("Element Pragma", () => {
+describe("Basic JSX RENDERING TESTS", () => {
 	test("createElement returns a valid element", () => {
 		const element = <div>Hello</div>;
 		expect(element).toBeInstanceOf(HTMLElement);

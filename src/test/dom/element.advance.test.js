@@ -3,7 +3,7 @@
 import { alorin } from "../../core";
 import { jest } from "@jest/globals";
 
-describe("Advanced JSX Rendering Tests", () => {
+describe("ADVANCED JSX RENDERING TESTS", () => {
 	test("Complex nested structure with mixed element types and conditional rendering", () => {
 		const items = ["Apple", "Banana", "Cherry"];
 		const showExtraInfo = true;
