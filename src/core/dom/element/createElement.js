@@ -1,20 +1,21 @@
 import { propsHandler } from "./props";
 import { processChildrens } from "./childrens";
+import { isFunc, newElement, newDFrag } from "../../../utils";
+import { createEffect } from "../../reactivity";
 
 export const createElement = (tag, props, ...childrens) => {
-	let _props = props || {};
+	let _props = props || {},
+		fragment = newDFrag(),
+		element;
 
-	const fragment = document.createDocumentFragment();
-	let element;
-
-	if (typeof tag === "function") {
+	if (isFunc(tag)) {
 		element = tag(_props, ...childrens);
 	} else {
-		element = document.createElement(tag);
-        propsHandler(_props, element);
+		element = newElement(tag);
+		propsHandler(_props, element);
 	}
-
 	processChildrens(childrens, fragment);
-	if(element) element.appendChild(fragment);
+
+	if (element) element.appendChild(fragment);
 	return element;
 };
