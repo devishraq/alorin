@@ -1,4 +1,4 @@
-export const render = (element, container) => {
+export const render = (element, container=document.body) => {
 	// Cleaning the container
 	while (container.firstChild) {
 		container.removeChild(container.firstChild);
