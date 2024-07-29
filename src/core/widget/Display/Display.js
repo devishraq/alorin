@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { alorin, createEffect } from "../..";
 
 /**

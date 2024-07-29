@@ -1,6 +1,6 @@
-import { createElement } from "./../dom";
-import { generateClass } from "./generateClass";
-import { insertRule } from "./insertRule";
+import { createElement } from "../dom";
+import { generateClass } from "./generate-class";
+import { insertRule } from "./insert-rule";
 
 // createStyle function to createStyling according to tag & styles, className is auto-genrated from @generateClass function.
 export const createStyle = (tag) => (styles) => {

@@ -1,1 +1,1 @@
-export { signalHandler } from './signalHandler';
+export { signalHandler } from './signal-handler';

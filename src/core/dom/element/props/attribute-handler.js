@@ -14,7 +14,7 @@
  */
 
 import { isNUB } from "../../../../utils/checkers";
-import { styleHandler } from "./";
+import { styleHandler } from ".";
 // import { createEffect } from "../../../reactivity";
 // import { signalHandler } from "../../signal";
 

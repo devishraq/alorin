@@ -1,2 +1,2 @@
-export { processChildrens } from './processChildren'
-export { processNestedChildren } from './processNestedChildren'
+export { processChildrens } from "./children-processor";
+export { processNestedChildren } from "./nested-children-processor";

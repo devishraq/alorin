@@ -1,3 +1,3 @@
-export { createElement } from "./element/createElement";
+export { createElement } from "./element/create-element";
 export { wrapper } from "./wrapper/wrapper";
-export { createEvent } from "./event/createEvent";
+export { createEvent } from "./event/create-event";

@@ -1,7 +1,7 @@
-import { signalHandler } from "../../signal/";
-import { createEffect } from "../../../reactivity/signal";
-import { processNestedChildren } from "./processNestedChildren.js";
-import { isArr, isFunc, isNode, isNUB, newTextNode } from "../../../../utils";
+import { signalHandler } from "../../signal/index.js";
+import { createEffect } from "../../../reactivity/signal/index.js";
+import { processNestedChildren } from "./";
+import { isArr, isFunc, isNode, isNUB, newTextNode } from "../../../../utils/index.js";
 
 export const processChildrens = (childrens, fragment) => {
 	childrens.forEach((node) => {
