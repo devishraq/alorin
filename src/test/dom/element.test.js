@@ -3,6 +3,71 @@
 import { alorin } from "../../core";
 import { jest } from "@jest/globals";
 
+describe("Basic JSX RENDERING TESTS", () => {
+	test("createElement returns a valid element", () => {
+		const element = <div>Hello</div>;
+		expect(element).toBeInstanceOf(HTMLElement);
+		expect(element.tagName).toBe("DIV");
+		expect(element.textContent).toBe("Hello");
+	});
+
+	test("Nested elements are created correctly", () => {
+		const element = (
+			<div>
+				<h1>Title</h1>
+				<p>Paragraph</p>
+			</div>
+		);
+		expect(element.children).toHaveLength(2);
+		expect(element.children[0].tagName).toBe("H1");
+		expect(element.children[1].tagName).toBe("P");
+	});
+
+	test("Props are set correctly", () => {
+		const element = (
+			<div id="test" class="sample">
+				Test
+			</div>
+		);
+		expect(element).toHaveAttribute("id", "test");
+		expect(element).toHaveClass("sample");
+	});
+
+	test("Event listeners are attached properly", () => {
+		const mockFn = jest.fn();
+		const element = <button onClick={mockFn}>Click me</button>;
+		element.click();
+		expect(mockFn).toHaveBeenCalledTimes(1);
+	});
+
+	test("Conditional rendering works", () => {
+		const condition = true;
+		const element = (
+			<div>
+				{condition && <span>Rendered</span>}
+				{!condition && <span>Not Rendered</span>}
+			</div>
+		);
+		expect(element.children).toHaveLength(1);
+		expect(element.children[0].textContent).toBe("Rendered");
+	});
+
+	test("List rendering works", () => {
+		const items = ["Item 1", "Item 2", "Item 3"];
+		const element = (
+			<ul>
+				{items.map((item) => (
+					<li key={item}>{item}</li>
+				))}
+			</ul>
+		);
+		expect(element.children).toHaveLength(3);
+		expect(element.children[0].textContent).toBe("Item 1");
+		expect(element.children[1].textContent).toBe("Item 2");
+		expect(element.children[2].textContent).toBe("Item 3");
+	});
+});
+
 describe("ADVANCED JSX RENDERING TESTS", () => {
 	test("Complex nested structure with mixed element types and conditional rendering", () => {
 		const items = ["Apple", "Banana", "Cherry"];
@@ -13,21 +78,17 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 					<h1>Product List</h1>
 					<nav>
 						<ul>
-							{[
-								"Home",
-								"Products",
-								"About",
-							].map((item) => (
-								<li key={item}>
-									<a
-										href={`#${item.toLowerCase()}`}
-									>
-										{
-											item
-										}
-									</a>
-								</li>
-							))}
+							{["Home", "Products", "About"].map(
+								(item) => (
+									<li key={item}>
+										<a
+											href={`#${item.toLowerCase()}`}
+										>
+											{item}
+										</a>
+									</li>
+								)
+							)}
 						</ul>
 					</nav>
 				</header>
@@ -35,37 +96,21 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 					<section>
 						<h2>Available Products</h2>
 						<ul>
-							{items.map(
-								(
-									item,
-									index
-								) => (
-									<li
-										key={
-											index
-										}
-									>
-										{
-											item
-										}
-										{showExtraInfo && (
-											<span className="extra-info">
-												{" "}
-												-
-												In
-												Stock
-											</span>
-										)}
-									</li>
-								)
-							)}
+							{items.map((item, index) => (
+								<li key={index}>
+									{item}
+									{showExtraInfo && (
+										<span className="extra-info">
+											{" "}
+											- In Stock
+										</span>
+									)}
+								</li>
+							))}
 						</ul>
 					</section>
 					{items.length > 0 ? (
-						<p>
-							Total items:{" "}
-							{items.length}
-						</p>
+						<p>Total items: {items.length}</p>
 					) : (
 						<p>No items available</p>
 					)}
@@ -82,21 +127,19 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 		expect(complexElement.querySelector("h1").textContent).toBe(
 			"Product List"
 		);
-		expect(complexElement.querySelectorAll("nav li").length).toBe(
+		expect(complexElement.querySelectorAll("nav li").length).toBe(3);
+		expect(complexElement.querySelectorAll("section li").length).toBe(
 			3
 		);
-		expect(
-			complexElement.querySelectorAll("section li").length
-		).toBe(3);
-		expect(
-			complexElement.querySelectorAll(".extra-info").length
-		).toBe(3);
-		expect(
-			complexElement.querySelector("main > p").textContent
-		).toBe("Total items: 3");
-		expect(
-			complexElement.querySelector("footer p").textContent
-		).toBe("© 2024 Product Store");
+		expect(complexElement.querySelectorAll(".extra-info").length).toBe(
+			3
+		);
+		expect(complexElement.querySelector("main > p").textContent).toBe(
+			"Total items: 3"
+		);
+		expect(complexElement.querySelector("footer p").textContent).toBe(
+			"© 2024 Product Store"
+		);
 	});
 
 	test("Dynamic attribute names and complex attribute merging", () => {
@@ -131,9 +174,7 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 		expect(element.style.color).toBe("red");
 		expect(element.style.fontSize).toBe("16px");
 		expect(element.getAttribute("data-base")).toBe("base-value");
-		expect(element.getAttribute("data-custom")).toBe(
-			"custom-value"
-		);
+		expect(element.getAttribute("data-custom")).toBe("custom-value");
 		expect(element.getAttribute("aria-label")).toBe("Test element");
 	});
 
@@ -141,10 +182,10 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 		const element = (
 			<div>
 				<input type="checkbox" checked />
-				<input type="checkbox" checked='' />
+				<input type="checkbox" checked="" />
 				<button disabled>Disabled Button</button>
 				<button disabled={false}>Enabled Button</button>
-                <div hidden>Null Hidden</div>
+				<div hidden>Null Hidden</div>
 				<div data-attr={undefined}>Undefined Attr</div>
 			</div>
 		);
@@ -183,9 +224,7 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 					<p>Fragment 1</p>
 					<>
 						<p>Nested Fragment</p>
-						<ListItem>
-							Custom Component
-						</ListItem>
+						<ListItem>Custom Component</ListItem>
 					</>
 				</>
 			</div>
@@ -237,9 +276,7 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 			<ul onClick={handleClick}>
 				<li>Item 1</li>
 				<li>Item 2</li>
-				<li onClick={handleSpecialClick}>
-					Special Item
-				</li>
+				<li onClick={handleSpecialClick}>Special Item</li>
 			</ul>
 		);
 
@@ -284,31 +321,16 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 				{condition1 && (
 					<section>
 						{condition2 ? (
-							<p>
-								Condition 2 is
-								true
-							</p>
+							<p>Condition 2 is true</p>
 						) : (
 							<>
-								<h2>
-									Condition
-									2 is
-									false
-								</h2>
+								<h2>Condition 2 is false</h2>
 								<ul>
-									{items.map(
-										(
-											item
-										) => (
-											<li
-												key={
-													item
-												}
-											>
-												{item.toUpperCase()}
-											</li>
-										)
-									)}
+									{items.map((item) => (
+										<li key={item}>
+											{item.toUpperCase()}
+										</li>
+									))}
 								</ul>
 							</>
 						)}
