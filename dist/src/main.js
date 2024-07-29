@@ -1,1 +1,1 @@
-import App from"./test/App";import{olka}from"./core";document.querySelector("#root").appendChild(olka.createElement(App,null));
+import App from"./test/App";import{alorin,render}from"./core";render(alorin.createElement(App,null));

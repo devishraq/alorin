@@ -1,1 +1,1 @@
-export{createElement}from"./element/createElement";export{wrapper}from"./wrapper/wrapper";export{createEvent}from"./event/createEvent";
+export{createElement}from"./element/createElement";export{wrapper}from"./wrapper/wrapper";export{createEvent}from"./event/create-event";
