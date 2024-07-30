@@ -9,28 +9,26 @@ import { isArr } from "../../../utils";
 import "../../../utils/loopers";
 export const createEvent = (props, element) => {
 	// Filter the props to get an array of [key, value] pairs for the event handlers.
-	console.log("props", props);
-	const isNativeEvent = (key) => `on${key}` in HTMLElement.prototype;
+	const isNativeEvent = (key) => `on${key}` in HTMLElement.prototype,
+		adv = (eN, cB) => element.addEventListener(eN, cB);
 
-	const events = Object.entries(props).filter(([key]) =>
-		key.startsWith("on")
-	);
-
-	events.forEach(([key, callbackHandler]) => {
-		const eventName = key.slice(2).toLowerCase();
-		if (isNativeEvent(eventName)) {
-			if (isArr(callbackHandler)) {
-				callbackHandler.For((callback, i, a) => {
-					element.addEventListener(eventName, callback);
-					console.log(i, a);
-				});
-			} else {
-				element.addEventListener(eventName, callbackHandler);
+	Object.entries(props)
+		.filter(([key]) => key.startsWith("on"))
+		.forEach(([key, cB]) => {
+			const eN = key.slice(2).toLowerCase();
+			if (isNativeEvent(eN)) {
+				if (isArr(cB)) {
+					// @ts-ignore
+					cB.For((callback) =>
+						adv(eN, callback)
+					);
+				} else {
+					adv(eN, cB);
+				}
 			}
-		}
-	});
+		});
 
 	// This function does not return anything. (Just Create Events based on Props)
 };
 
-// Path: src/core/dom/createTextElement.js
+// Path: src/core/dom/event/create-event.js

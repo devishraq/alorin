@@ -15,27 +15,12 @@
 
 import { isNUB } from "../../../../utils/checkers";
 import { styleHandler } from ".";
+import { booleanAttributeBits } from "./constants";
 // import { createEffect } from "../../../reactivity";
 // import { signalHandler } from "../../signal";
 
 export const attributeHandler = (elementProps, element) => {
-	const booleanAttributes = new Set([
-		"checked",
-		"selected",
-		"disabled",
-		"readonly",
-		"required",
-		"multiple",
-		"autofocus",
-		"hidden",
-		"contenteditable",
-		"spellcheck",
-		"draggable",
-		"open",
-		"async",
-		"defer",
-		"reversed",
-	]);
+	const isBooleanAttribute = (attr) => !!booleanAttributeBits[attr];
 
 	for (const attribute in elementProps) {
 		// If the attribute is null or undefined or event, ignore it.
@@ -49,15 +34,16 @@ export const attributeHandler = (elementProps, element) => {
 		else if (attribute === "style") styleHandler(elementProps, element);
 		else if (attribute === "className")
 			element.setAttribute("class", elementProps[attribute]);
-		else if (booleanAttributes.has(attribute)) {
+		else if (isBooleanAttribute(attribute)) {
 			elementProps[attribute]
 				? element.setAttribute(attribute, "")
 				: element.removeAttribute(attribute);
 		}
 
 		// This is code can be infected ...... have to change to the earlier version if it goes f**ked up!
-		else if (isNUB(elementProps[attribute])) {
-			element.setAttribute(attribute, false);
-		} else element.setAttribute(attribute, elementProps[attribute]);
+		// else if (isNUB(elementProps[attribute])) {
+		// 	element.setAttribute(attribute, false);
+        // } 
+        else element.setAttribute(attribute, elementProps[attribute]);
 	}
 };
