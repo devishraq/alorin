@@ -1,8 +1,8 @@
 import { propsHandler } from "./props";
 import { processChildrens } from "./childrens";
-import { isFunc, newElement, newDFrag } from "../../../utils";
+import { isFunc, newElement, newDFrag, childAppender } from "../../../utils";
 import { createEffect } from "../../reactivity";
-
+ 
 export const createElement = (tag, props, ...childrens) => {
 	let _props = props || {},
 		fragment = newDFrag(),
@@ -16,6 +16,6 @@ export const createElement = (tag, props, ...childrens) => {
 	}
 	processChildrens(childrens, fragment);
 
-	if (element) element.appendChild(fragment);
+	if (element) childAppender(element, fragment);
 	return element;
 };

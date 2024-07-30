@@ -1,11 +1,12 @@
 import { signalHandler } from "../../signal/index.js";
 import { createEffect } from "../../../reactivity/signal/index.js";
 import { processNestedChildren } from "./";
-import { isArr, isFunc, isNode, isNUB, newTextNode } from "../../../../utils/index.js";
+import { isArr, isFunc, isNode, isNUB, newTextNode } from "../../../../utils";
+import { childAppender } from "../../../../utils/creators.js";
 
 export const processChildrens = (childrens, fragment) => {
 	childrens.forEach((node) => {
-		let childNode = null;
+		let childToAppend = null;
 
 		// If node is null or undefined or bool, f**k it
 		if (isNUB(node)) return;
@@ -16,21 +17,21 @@ export const processChildrens = (childrens, fragment) => {
 				break;
 
 			case isNode(node):
-				childNode = node;
+				childToAppend = node;
 				break;
 
 			case isFunc(node):
 				if (node.isSignal)
-					childNode = signalHandler(node, fragment);
-				else childNode = node();
+					childToAppend = signalHandler(node, fragment);
+				else childToAppend = node();
 				break;
 
 			default:
-				childNode = newTextNode(node);
+				childToAppend = newTextNode(node);
 				break;
 		}
 
 		// If childNode is not null or undefined, append it to the fragment
-		if (childNode) fragment.appendChild(childNode);
+		if (childToAppend) childAppender(fragment, childToAppend);
 	});
 };

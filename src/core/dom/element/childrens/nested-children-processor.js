@@ -1,10 +1,12 @@
 // import signalHandler
 // import { signalHandler } from "../../../reactivity";
 
-import { isNode, isNUB } from "../../../../utils/checkers";
+import { isNode, isNUB } from "../../../../utils";
+import { childAppender } from "../../../../utils/creators";
+import "../../../../utils/loopers";
 
 export const processNestedChildren = (child, fragment) => {
-	child.forEach((node) => {
+	child.For((node) => {
 		let childToAppend = null;
 
 		// If child is null or undefined or bool, f**k it
@@ -12,8 +14,8 @@ export const processNestedChildren = (child, fragment) => {
 
 		// if child is a node element (html-element) add for fragment addition!
 		if (isNode(node)) childToAppend = node;
-        
-		if (childToAppend) fragment.appendChild(childToAppend);
+
+		if (childToAppend) childAppender(fragment, childToAppend);
 	});
 };
 
