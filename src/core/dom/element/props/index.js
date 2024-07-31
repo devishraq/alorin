@@ -11,5 +11,4 @@
 
 export { propsHandler } from "./props-handler";
 export { attributeHandler } from "./attribute-handler";
-export { eventHandler } from "./event-handler";
 export { styleHandler } from "./style-handler";
