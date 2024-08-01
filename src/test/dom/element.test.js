@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { alorin } from "../../core";
+import { alorin, render } from "../../core";
 import { jest } from "@jest/globals";
 
 describe("Basic JSX RENDERING TESTS", () => {
@@ -349,3 +349,145 @@ describe("ADVANCED JSX RENDERING TESTS", () => {
 		expect(element.querySelectorAll("li")[0].textContent).toBe("A");
 	});
 });
+
+
+describe('Extended JSX RENDERING TESTS', () => { 
+ test("Handling of SVG elements", () => {
+    const svgElement = (
+      <svg width="100" height="100">
+        <circle cx="50" cy="50" r="40" stroke="green" strokeWidth="4" fill="yellow" />
+      </svg>
+    );
+
+    expect(svgElement instanceof SVGElement).toBe(true);
+    expect(svgElement.namespaceURI).toBe("http://www.w3.org/2000/svg");
+    expect(svgElement.querySelector("circle")).not.toBeNull();
+    expect(svgElement.querySelector("circle").getAttribute("fill")).toBe("yellow");
+  });
+
+  test("Handling of custom elements", () => {
+    class MyCustomElement extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = "<p>Custom element content</p>";
+      }
+    }
+    customElements.define("my-custom-element", MyCustomElement);
+
+    const element = (
+      <div>
+        <my-custom-element></my-custom-element>
+      </div>
+    );
+
+    expect(element.querySelector("my-custom-element")).not.toBeNull();
+    expect(element.querySelector("my-custom-element p").textContent).toBe("Custom element content");
+  });
+
+  test("Handling of dangerouslySetInnerHTML", () => {
+    const htmlContent = "<p>This is <strong>bold</strong> text</p>";
+    const element = <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+
+    expect(element.innerHTML).toBe(htmlContent);
+    expect(element.querySelector("strong")).not.toBeNull();
+  });
+
+  test("Rendering of void elements", () => {
+    const element = (
+      <div>
+        <br />
+        <img src="test.jpg" alt="Test" />
+        <input type="text" />
+      </div>
+    );
+
+    expect(element.querySelector("br")).not.toBeNull();
+    expect(element.querySelector("img").getAttribute("src")).toBe("test.jpg");
+    expect(element.querySelector("input").getAttribute("type")).toBe("text");
+  });
+
+test("Rendering of JSX without comments", () => {
+  const element = (
+    <div>
+      {/* This is a comment */}
+      <p>Visible content</p>
+    </div>
+  );
+
+  // Verify the child elements
+  expect(element.children.length).toBe(1); // Only the <p> element is rendered
+  expect(element.children[0].textContent).toBe("Visible content");
+});
+
+  test("Rendering of array children without keys", () => {
+    const items = ["Item 1", "Item 2", "Item 3"];
+    const element = (
+      <ul>
+        {items.map((item) => <li>{item}</li>)}
+      </ul>
+    );
+
+    expect(element.children.length).toBe(3);
+    expect(Array.from(element.children).map(child => child.textContent)).toEqual(items);
+  });
+
+  test("Handling of non-string attribute values", () => {
+    const objValue = { key: "value" };
+    const element = <div data-obj={objValue} data-num={42} data-bool={true} />;
+
+    expect(element.getAttribute("data-obj")).toBe("[object Object]");
+    expect(element.getAttribute("data-num")).toBe("42");
+    expect(element.getAttribute("data-bool")).toBe("true");
+  });
+
+  test("Rendering of components with children as function", () => {
+    const Wrapper = ({ children }) => <div>{children("Hello")}</div>;
+    const element = <Wrapper>{(greeting) => <p>{greeting} World</p>}</Wrapper>;
+    render(element);
+    expect(element.textContent).toBe("Hello World");
+  });
+
+  test("Handling of style object with CSS custom properties", () => {
+    const element = (
+      <div style={{ "--custom-color": "blue", color: "var(--custom-color)" }}>
+        Custom color
+      </div>
+    );
+
+    expect(element.style.getPropertyValue("--custom-color")).toBe("blue");
+    expect(element.style.color).toBe("var(--custom-color)");
+  });
+
+  test("Rendering of elements with multiple class names", () => {
+    const baseClass = "base";
+    const conditionalClass = true ? "active" : "";
+    const element = <div className={`${baseClass} ${conditionalClass} extra`} />;
+
+    expect(element.className).toBe("base active extra");
+  });
+
+  test("Handling of boolean attributes with expressions", () => {
+    const isDisabled = true;
+    const element = <button disabled={isDisabled}>Click me</button>;
+
+    expect(element.disabled).toBe(true);
+  });
+
+  test("Nested fragments with mixed content", () => {
+    const element = (
+      <>
+        <p>Paragraph 1</p>
+        <>
+          Text node
+          <span>Span content</span>
+        </>
+        <p>Paragraph 2</p>
+      </>
+    );
+
+    expect(element.childNodes.length).toBe(4);
+    expect(element.childNodes[1].nodeType).toBe(Node.TEXT_NODE);
+    expect(element.childNodes[2].nodeType).toBe(Node.ELEMENT_NODE);
+  });
+});
+
+ 
