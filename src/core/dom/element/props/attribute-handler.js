@@ -14,36 +14,39 @@
  */
 
 import { isNUB } from "../../../../utils/checkers";
-import { styleHandler } from ".";
+import { styleHandler } from "./";
 import { booleanAttributeBits } from "./constants";
-// import { createEffect } from "../../../reactivity";
-// import { signalHandler } from "../../signal";
+import { createEvent } from "../../event";
 
 export const attributeHandler = (elementProps, element) => {
-	const isBooleanAttribute = (attr) => !!booleanAttributeBits[attr];
+  const isBooleanAttribute = attr => !!booleanAttributeBits[attr],
+    setAttr = (aT, vL) => element.setAttribute(aT, vL),
+    rmAttr = aT => element.removeAttribute(aT);
 
-	for (const attribute in elementProps) {
-		// If the attribute is null or undefined or event, ignore it.
-		if (
-			isNUB(attribute) ||
-			attribute === "children" ||
-			attribute.startsWith("on")
-		)
-			null;
-		// If the attribute is 'style', delegate to the styleHandler. else, set the attribute directly.
-		else if (attribute === "style") styleHandler(elementProps, element);
-		else if (attribute === "className")
-			element.setAttribute("class", elementProps[attribute]);
-		else if (isBooleanAttribute(attribute)) {
-			elementProps[attribute]
-				? element.setAttribute(attribute, "")
-				: element.removeAttribute(attribute);
-		}
+  for (const attribute in elementProps) {
+    switch (true) {
+      case isNUB(attribute) || attribute === "children":
+        break;
 
-		// This is code can be infected ...... have to change to the earlier version if it goes f**ked up!
-		// else if (isNUB(elementProps[attribute])) {
-		// 	element.setAttribute(attribute, false);
-        // } 
-        else element.setAttribute(attribute, elementProps[attribute]);
-	}
+      case attribute.startsWith("on"):
+        createEvent(elementProps, element);
+        break;
+
+      case attribute === "style":
+        styleHandler(elementProps, element);
+        break;
+
+      case attribute === "className":
+        setAttr("class", elementProps[attribute]);
+        break;
+
+      case isBooleanAttribute(attribute):
+        elementProps[attribute] ? setAttr(attribute, elementProps[attribute]) : rmAttr(attribute);
+        break;
+
+      default:
+        setAttr(attribute, elementProps[attribute]);
+        break;
+    }
+  }
 };
