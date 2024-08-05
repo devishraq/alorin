@@ -1,26 +1,27 @@
 {
-    "minify": true,
-    "jsc": {
-        "minify": {
-            "compress": true
-        },
-        "parser": {
-            "syntax": "ecmascript",
-            "jsx": true,
-            "decorators": true
-        },
-        "transform": {
-            "react": {
-                "pragma": "alorin.createElement",
-                "pragmaFrag": "alorin.wrapper",
-                "refresh": true
-            }
-        },
-        "target": "esnext",
-        "preserveAllComments": false
-    },
-    "module": {
-        "type": "es6",
-        "strict": true
-    }
+      "minify": true,
+      "jsc": {
+            "minify": {
+                  "compress": true
+            },
+            "parser": {
+                  "syntax": "typescript",
+                  "tsx": true,
+                  "dynamicImport": true,
+                  "decorators": true
+            },
+            "transform": {
+                  "react": {
+                        "pragma": "alorin.createElement",
+                        "pragmaFrag": "alorin.wrapper",
+                        "refresh": true
+                  }
+            },
+            "target": "esnext",
+            "preserveAllComments": false
+      },
+      "module": {
+            "type": "commonjs"
+      }
 }
+// HAS TO CHECK THE VALIDITY OF THIS JSON USING THIS TOOL: https://jsonlint.com/
