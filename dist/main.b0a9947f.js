@@ -117,24 +117,28 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../dist/src/core/dom/element/props/propsHandler.js":[function(require,module,exports) {
+})({"../dist/src/core/dom/element/props/props-handler.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: !0
+}), Object.defineProperty(exports, "propsHandler", {
+  enumerable: !0,
+  get: function get() {
+    return propsHandler;
+  }
+});
+var _ = require("."),
+  propsHandler = function propsHandler(elementProps, element) {
+    elementProps && (0, _.attributeHandler)(elementProps, element);
+  };
+},{".":"../dist/src/core/dom/element/props/index.js"}],"../dist/src/utils/checkers.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.propsHandler = void 0;
-var _ = require("./");
-var propsHandler = exports.propsHandler = function propsHandler(elementProps, element) {
-  elementProps && (0, _.attributeHandler)(elementProps, element), (0, _.eventHandler)(elementProps, element);
-};
-},{"./":"../dist/src/core/dom/element/props/index.js"}],"../dist/src/utils/checkers.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isStr = exports.isObj = exports.isNode = exports.isNUB = exports.isFunc = exports.isArr = void 0;
+exports.isStr = exports.isSVG = exports.isObj = exports.isNode = exports.isNUB = exports.isFunc = exports.isArr = void 0;
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var isArr = exports.isArr = function isArr(a) {
   return Array.isArray(a);
@@ -145,6 +149,9 @@ var isNUB = exports.isNUB = function isNUB(h) {
 var isNode = exports.isNode = function isNode(n) {
   return n instanceof Node;
 };
+var isSVG = exports.isSVG = function isSVG(s) {
+  return s instanceof SVGElement;
+};
 var isFunc = exports.isFunc = function isFunc(f) {
   return "function" == typeof f;
 };
@@ -154,41 +161,75 @@ var isStr = exports.isStr = function isStr(s) {
 var isObj = exports.isObj = function isObj(n) {
   return "object" == _typeof(n);
 };
-},{}],"../dist/src/core/dom/element/props/attributeHandler.js":[function(require,module,exports) {
+},{}],"../dist/src/core/dom/element/props/constants.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: !0
+}), Object.defineProperty(exports, "booleanAttributeBits", {
+  enumerable: !0,
+  get: function get() {
+    return booleanAttributeBits;
+  }
 });
-exports.attributeHandler = void 0;
-var _checkers = require("../../../../utils/checkers");
-var _ = require("./");
-var attributeHandler = exports.attributeHandler = function attributeHandler(elementProps, element) {
-  var booleanAttributes = new Set(["checked", "selected", "disabled", "readonly", "required", "multiple", "autofocus", "hidden", "contenteditable", "spellcheck", "draggable", "open", "async", "defer", "reversed"]);
-  for (var attribute in elementProps) (0, _checkers.isNUB)(attribute) || "children" === attribute || attribute.startsWith("on") || ("style" === attribute ? (0, _.styleHandler)(elementProps, element) : "className" === attribute ? element.setAttribute("class", elementProps[attribute]) : booleanAttributes.has(attribute) ? elementProps[attribute] ? element.setAttribute(attribute, "") : element.removeAttribute(attribute) : (0, _checkers.isNUB)(elementProps[attribute]) ? element.setAttribute(attribute, !1) : element.setAttribute(attribute, elementProps[attribute]));
+var booleanAttributeBits = {
+  allowfullscreen: 1,
+  async: 2,
+  autofocus: 4,
+  autoplay: 8,
+  checked: 16,
+  controls: 32,
+  default: 64,
+  defer: 128,
+  disabled: 256,
+  formnovalidate: 512,
+  hidden: 1024,
+  ismap: 2048,
+  itemscope: 4096,
+  loop: 8192,
+  multiple: 16384,
+  muted: 32768,
+  nomodule: 65536,
+  novalidate: 131072,
+  open: 262144,
+  playsinline: 524288,
+  readonly: 1048576,
+  required: 2097152,
+  reversed: 4194304,
+  selected: 8388608,
+  truespeed: 16777216
 };
-},{"../../../../utils/checkers":"../dist/src/utils/checkers.js","./":"../dist/src/core/dom/element/props/index.js"}],"../dist/src/utils/creators.js":[function(require,module,exports) {
+},{}],"../dist/src/utils/creators.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.newTextNode = exports.newElement = exports.newDFrag = void 0;
+exports.newTextNode = exports.newElement = exports.newDFrag = exports.childAppender = void 0;
 var d = document;
+var newDFrag = exports.newDFrag = function newDFrag() {
+  return d.createDocumentFragment();
+};
 var newTextNode = exports.newTextNode = function newTextNode(s) {
   return d.createTextNode(s);
 };
 var newElement = exports.newElement = function newElement(t) {
   return d.createElement(t);
 };
-var newDFrag = exports.newDFrag = function newDFrag() {
-  return d.createDocumentFragment();
+var childAppender = exports.childAppender = function childAppender(p, c) {
+  return p.appendChild(c);
 };
 },{}],"../dist/src/utils/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
+});
+Object.defineProperty(exports, "childAppender", {
+  enumerable: true,
+  get: function () {
+    return _creators.childAppender;
+  }
 });
 Object.defineProperty(exports, "isArr", {
   enumerable: true,
@@ -273,10 +314,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var createEvent = exports.createEvent = function createEvent(props, element) {
-  console.log("props", props);
   var isNativeEvent = function isNativeEvent(key) {
-    return "on".concat(key) in HTMLElement.prototype;
-  };
+      return "on".concat(key) in HTMLElement.prototype;
+    },
+    adv = function adv(eN, cB) {
+      return element.addEventListener(eN, cB);
+    };
   Object.entries(props).filter(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 1),
       key = _ref2[0];
@@ -284,11 +327,11 @@ var createEvent = exports.createEvent = function createEvent(props, element) {
   }).forEach(function (_ref3) {
     var _ref4 = _slicedToArray(_ref3, 2),
       key = _ref4[0],
-      callbackHandler = _ref4[1];
-    var eventName = key.slice(2).toLowerCase();
-    isNativeEvent(eventName) && ((0, _utils.isArr)(callbackHandler) ? callbackHandler.For(function (callback, i, a) {
-      element.addEventListener(eventName, callback), console.log(i, a);
-    }) : element.addEventListener(eventName, callbackHandler));
+      cB = _ref4[1];
+    var eN = key.slice(2).toLowerCase();
+    isNativeEvent(eN) && ((0, _utils.isArr)(cB) ? cB.For(function (callback) {
+      return adv(eN, callback);
+    }) : adv(eN, cB));
   });
 };
 },{"../../../utils":"../dist/src/utils/index.js","../../../utils/loopers":"../dist/src/utils/loopers.js"}],"../dist/src/core/dom/event/index.js":[function(require,module,exports) {
@@ -304,18 +347,92 @@ Object.defineProperty(exports, "createEvent", {
   }
 });
 var _createEvent = require("./create-event");
-},{"./create-event":"../dist/src/core/dom/event/create-event.js"}],"../dist/src/core/dom/element/props/eventHandler.js":[function(require,module,exports) {
+},{"./create-event":"../dist/src/core/dom/event/create-event.js"}],"../dist/src/core/dom/element/props/attribute-handler.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: !0
+}), Object.defineProperty(exports, "attributeHandler", {
+  enumerable: !0,
+  get: function get() {
+    return attributeHandler;
+  }
 });
-exports.eventHandler = void 0;
-var _event = require("../../event");
-var eventHandler = exports.eventHandler = function eventHandler(elementProps, element) {
-  (0, _event.createEvent)(elementProps, element);
-};
-},{"../../event":"../dist/src/core/dom/event/index.js"}],"../dist/src/core/reactivity/signal/signal.js":[function(require,module,exports) {
+var _checkers = require("../../../../utils/checkers"),
+  _ = require("./"),
+  _constants = require("./constants"),
+  _event = require("../../event"),
+  attributeHandler = function attributeHandler(elementProps, element) {
+    var isBooleanAttribute = function isBooleanAttribute(attr) {
+        return !!_constants.booleanAttributeBits[attr];
+      },
+      setAttr = function setAttr(aT, vL) {
+        return element.setAttribute(aT, vL);
+      },
+      rmAttr = function rmAttr(aT) {
+        return element.removeAttribute(aT);
+      };
+    for (var attribute in elementProps) switch (!0) {
+      case (0, _checkers.isNUB)(attribute) || "children" === attribute:
+        break;
+      case attribute.startsWith("on"):
+        (0, _event.createEvent)(elementProps, element);
+        break;
+      case "style" === attribute:
+        (0, _.styleHandler)(elementProps, element);
+        break;
+      case "className" === attribute:
+        setAttr("class", elementProps[attribute]);
+        break;
+      case isBooleanAttribute(attribute):
+        elementProps[attribute] ? setAttr(attribute, elementProps[attribute]) : rmAttr(attribute);
+        break;
+      default:
+        setAttr(attribute, elementProps[attribute]);
+    }
+  };
+},{"../../../../utils/checkers":"../dist/src/utils/checkers.js","./":"../dist/src/core/dom/element/props/index.js","./constants":"../dist/src/core/dom/element/props/constants.js","../../event":"../dist/src/core/dom/event/index.js"}],"../dist/src/core/dom/element/props/style-handler.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: !0
+}), Object.defineProperty(exports, "styleHandler", {
+  enumerable: !0,
+  get: function get() {
+    return styleHandler;
+  }
+});
+var _checkers = require("../../../../utils/checkers"),
+  styleHandler = function styleHandler(elementProps, element) {
+    var elemStyle = element.style,
+      elemePropStyle = elementProps.style;
+    (0, _checkers.isStr)(elemePropStyle) ? elemStyle.cssText = elemePropStyle : Object.assign(elemStyle, elemePropStyle), console.log(elemStyle, elemePropStyle);
+  };
+},{"../../../../utils/checkers":"../dist/src/utils/checkers.js"}],"../dist/src/core/dom/element/props/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: !0
+}), function (target, all) {
+  for (var name in all) Object.defineProperty(target, name, {
+    enumerable: !0,
+    get: all[name]
+  });
+}(exports, {
+  attributeHandler: function attributeHandler() {
+    return _attributehandler.attributeHandler;
+  },
+  propsHandler: function propsHandler() {
+    return _propshandler.propsHandler;
+  },
+  styleHandler: function styleHandler() {
+    return _stylehandler.styleHandler;
+  }
+});
+var _propshandler = require("./props-handler"),
+  _attributehandler = require("./attribute-handler"),
+  _stylehandler = require("./style-handler");
+},{"./props-handler":"../dist/src/core/dom/element/props/props-handler.js","./attribute-handler":"../dist/src/core/dom/element/props/attribute-handler.js","./style-handler":"../dist/src/core/dom/element/props/style-handler.js"}],"../dist/src/core/reactivity/signal/signal.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -344,7 +461,6 @@ function createSignal(initialValue) {
       } finally {
         _iterator.f();
       }
-      console.log("Notified"), console.log(_deps);
     };
   function get() {
     return currentEffect && _deps.add(currentEffect), value;
@@ -387,80 +503,7 @@ Object.defineProperty(exports, "createSignal", {
   }
 });
 var _signal = require("./signal");
-},{"./signal":"../dist/src/core/reactivity/signal/signal.js"}],"../dist/src/core/reactivity/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "createComputed", {
-  enumerable: true,
-  get: function () {
-    return _signal.createComputed;
-  }
-});
-Object.defineProperty(exports, "createEffect", {
-  enumerable: true,
-  get: function () {
-    return _signal.createEffect;
-  }
-});
-Object.defineProperty(exports, "createSignal", {
-  enumerable: true,
-  get: function () {
-    return _signal.createSignal;
-  }
-});
-var _signal = require("./signal");
-},{"./signal":"../dist/src/core/reactivity/signal/index.js"}],"../dist/src/core/dom/element/props/styleHandler.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.styleHandler = void 0;
-var _checkers = require("../../../../utils/checkers");
-require("../../../reactivity");
-var styleHandler = exports.styleHandler = function styleHandler(elementProps, element) {
-  var elemStyle = element.style,
-    elemePropStyle = elementProps.style;
-  (0, _checkers.isStr)(elemePropStyle) ? elemStyle.cssText = elemePropStyle : Object.assign(elemStyle, elemePropStyle);
-};
-},{"../../../../utils/checkers":"../dist/src/utils/checkers.js","../../../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/element/props/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "attributeHandler", {
-  enumerable: true,
-  get: function () {
-    return _attributeHandler.attributeHandler;
-  }
-});
-Object.defineProperty(exports, "eventHandler", {
-  enumerable: true,
-  get: function () {
-    return _eventHandler.eventHandler;
-  }
-});
-Object.defineProperty(exports, "propsHandler", {
-  enumerable: true,
-  get: function () {
-    return _propsHandler.propsHandler;
-  }
-});
-Object.defineProperty(exports, "styleHandler", {
-  enumerable: true,
-  get: function () {
-    return _styleHandler.styleHandler;
-  }
-});
-var _propsHandler = require("./propsHandler");
-var _attributeHandler = require("./attributeHandler");
-var _eventHandler = require("./eventHandler");
-var _styleHandler = require("./styleHandler");
-},{"./propsHandler":"../dist/src/core/dom/element/props/propsHandler.js","./attributeHandler":"../dist/src/core/dom/element/props/attributeHandler.js","./eventHandler":"../dist/src/core/dom/element/props/eventHandler.js","./styleHandler":"../dist/src/core/dom/element/props/styleHandler.js"}],"../dist/src/core/dom/signal/signalHandler.js":[function(require,module,exports) {
+},{"./signal":"../dist/src/core/reactivity/signal/signal.js"}],"../dist/src/core/dom/signal/signal-handler.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -488,54 +531,62 @@ Object.defineProperty(exports, "signalHandler", {
     return _signalHandler.signalHandler;
   }
 });
-var _signalHandler = require("./signalHandler");
-},{"./signalHandler":"../dist/src/core/dom/signal/signalHandler.js"}],"../dist/src/core/dom/element/childrens/processNestedChildren.js":[function(require,module,exports) {
+var _signalHandler = require("./signal-handler");
+},{"./signal-handler":"../dist/src/core/dom/signal/signal-handler.js"}],"../dist/src/core/dom/element/childrens/children-processor.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: !0
+}), Object.defineProperty(exports, "processChildrens", {
+  enumerable: !0,
+  get: function get() {
+    return processChildrens;
+  }
 });
-exports.processNestedChildren = void 0;
-var _checkers = require("../../../../utils/checkers");
-var processNestedChildren = exports.processNestedChildren = function processNestedChildren(child, fragment) {
-  child.forEach(function (node) {
-    var childToAppend = null;
-    !(0, _checkers.isNUB)(node) && ((0, _checkers.isNode)(node) && (childToAppend = node), childToAppend && fragment.appendChild(childToAppend));
-  });
-};
-},{"../../../../utils/checkers":"../dist/src/utils/checkers.js"}],"../dist/src/core/dom/element/childrens/processChildren.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.processChildrens = void 0;
-var _signal = require("../../signal/");
-require("../../../reactivity/signal");
-var _processNestedChildren = require("./processNestedChildren.js");
-var _utils = require("../../../../utils");
-var processChildrens = exports.processChildrens = function processChildrens(childrens, fragment) {
-  childrens.forEach(function (node) {
-    var childNode = null;
-    if (!(0, _utils.isNUB)(node)) {
+var _signal = require("../../signal"),
+  _ = require("./"),
+  _utils = require("../../../../utils"),
+  processChildrens = function processChildrens(childrens, fragment) {
+    childrens.forEach(function (node) {
+      var childToAppend = null;
       switch (!0) {
+        case (0, _utils.isNUB)(node):
+          return;
         case (0, _utils.isArr)(node):
-          (0, _processNestedChildren.processNestedChildren)(node, fragment);
+          (0, _.processNestedChildren)(node, fragment);
           break;
         case (0, _utils.isNode)(node):
-          childNode = node;
+          childToAppend = node;
           break;
         case (0, _utils.isFunc)(node):
-          childNode = node.isSignal ? (0, _signal.signalHandler)(node, fragment) : node();
+          childToAppend = node.isSignal ? (0, _signal.signalHandler)(node, fragment) : node(), console.log("me");
           break;
         default:
-          childNode = (0, _utils.newTextNode)(node);
+          childToAppend = (0, _utils.newTextNode)(node);
       }
-      childNode && fragment.appendChild(childNode);
-    }
+      childToAppend && (0, _utils.childAppender)(fragment, childToAppend);
+    });
+  };
+},{"../../signal":"../dist/src/core/dom/signal/index.js","./":"../dist/src/core/dom/element/childrens/index.js","../../../../utils":"../dist/src/utils/index.js"}],"../dist/src/core/dom/element/childrens/nested-children-processor.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: !0
+}), Object.defineProperty(exports, "processNestedChildren", {
+  enumerable: !0,
+  get: function get() {
+    return processNestedChildren;
+  }
+});
+var _utils = require("../../../../utils");
+require("../../../../utils/loopers");
+var processNestedChildren = function processNestedChildren(child, fragment) {
+  child.forEach(function (node) {
+    var childToAppend = null;
+    !(0, _utils.isNUB)(node) && ((0, _utils.isNode)(node) && (childToAppend = node), childToAppend && (0, _utils.childAppender)(fragment, childToAppend));
   });
 };
-},{"../../signal/":"../dist/src/core/dom/signal/index.js","../../../reactivity/signal":"../dist/src/core/reactivity/signal/index.js","./processNestedChildren.js":"../dist/src/core/dom/element/childrens/processNestedChildren.js","../../../../utils":"../dist/src/utils/index.js"}],"../dist/src/core/dom/element/childrens/index.js":[function(require,module,exports) {
+},{"../../../../utils":"../dist/src/utils/index.js","../../../../utils/loopers":"../dist/src/utils/loopers.js"}],"../dist/src/core/dom/element/childrens/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -544,38 +595,41 @@ Object.defineProperty(exports, "__esModule", {
 Object.defineProperty(exports, "processChildrens", {
   enumerable: true,
   get: function () {
-    return _processChildren.processChildrens;
+    return _childrenProcessor.processChildrens;
   }
 });
 Object.defineProperty(exports, "processNestedChildren", {
   enumerable: true,
   get: function () {
-    return _processNestedChildren.processNestedChildren;
+    return _nestedChildrenProcessor.processNestedChildren;
   }
 });
-var _processChildren = require("./processChildren");
-var _processNestedChildren = require("./processNestedChildren");
-},{"./processChildren":"../dist/src/core/dom/element/childrens/processChildren.js","./processNestedChildren":"../dist/src/core/dom/element/childrens/processNestedChildren.js"}],"../dist/src/core/dom/element/createElement.js":[function(require,module,exports) {
+var _childrenProcessor = require("./children-processor");
+var _nestedChildrenProcessor = require("./nested-children-processor");
+},{"./children-processor":"../dist/src/core/dom/element/childrens/children-processor.js","./nested-children-processor":"../dist/src/core/dom/element/childrens/nested-children-processor.js"}],"../dist/src/core/dom/element/create-element.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createElement = void 0;
-var _props2 = require("./props");
-var _childrens = require("./childrens");
-var _utils = require("../../../utils");
-require("../../reactivity");
-var createElement = exports.createElement = function createElement(tag, props) {
-  var _props = props || {},
-    fragment = (0, _utils.newDFrag)(),
-    element;
-  for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    childrens[_key - 2] = arguments[_key];
+  value: !0
+}), Object.defineProperty(exports, "createElement", {
+  enumerable: !0,
+  get: function get() {
+    return createElement;
   }
-  return (0, _utils.isFunc)(tag) ? element = tag.apply(void 0, [_props].concat(childrens)) : (0, _props2.propsHandler)(_props, element = (0, _utils.newElement)(tag)), (0, _childrens.processChildrens)(childrens, fragment), element && element.appendChild(fragment), element;
-};
-},{"./props":"../dist/src/core/dom/element/props/index.js","./childrens":"../dist/src/core/dom/element/childrens/index.js","../../../utils":"../dist/src/utils/index.js","../../reactivity":"../dist/src/core/reactivity/index.js"}],"../dist/src/core/dom/wrapper/wrapper.js":[function(require,module,exports) {
+});
+var _props = require("./props"),
+  _childrens = require("./childrens"),
+  _utils = require("../../../utils"),
+  createElement = function createElement(tag, props) {
+    var _props1 = props || {},
+      fragment = (0, _utils.newDFrag)(),
+      element;
+    for (var _len = arguments.length, childrens = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      childrens[_key - 2] = arguments[_key];
+    }
+    return (0, _utils.isFunc)(tag) ? element = tag.apply(void 0, [_props1].concat(childrens)) : (element = (0, _utils.newElement)(tag), (0, _props.propsHandler)(_props1, element)), (0, _childrens.processChildrens)(childrens, fragment), element && (0, _utils.childAppender)(element, fragment), element;
+  };
+},{"./props":"../dist/src/core/dom/element/props/index.js","./childrens":"../dist/src/core/dom/element/childrens/index.js","../../../utils":"../dist/src/utils/index.js"}],"../dist/src/core/dom/wrapper/wrapper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -610,10 +664,10 @@ Object.defineProperty(exports, "wrapper", {
     return _wrapper.wrapper;
   }
 });
-var _createElement = require("./element/createElement");
+var _createElement = require("./element/create-element");
 var _wrapper = require("./wrapper/wrapper");
 var _createEvent = require("./event/create-event");
-},{"./element/createElement":"../dist/src/core/dom/element/createElement.js","./wrapper/wrapper":"../dist/src/core/dom/wrapper/wrapper.js","./event/create-event":"../dist/src/core/dom/event/create-event.js"}],"../dist/src/core/render/render.js":[function(require,module,exports) {
+},{"./element/create-element":"../dist/src/core/dom/element/create-element.js","./wrapper/wrapper":"../dist/src/core/dom/wrapper/wrapper.js","./event/create-event":"../dist/src/core/dom/event/create-event.js"}],"../dist/src/core/render/render.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -638,72 +692,7 @@ Object.defineProperty(exports, "render", {
   }
 });
 var _render = require("./render");
-},{"./render":"../dist/src/core/render/render.js"}],"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.urlAlphabet = void 0;
-var urlAlphabet = exports.urlAlphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
-},{}],"../node_modules/nanoid/index.browser.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.random = exports.nanoid = exports.customRandom = exports.customAlphabet = void 0;
-Object.defineProperty(exports, "urlAlphabet", {
-  enumerable: true,
-  get: function () {
-    return _index.urlAlphabet;
-  }
-});
-var _index = require("./url-alphabet/index.js");
-var random = exports.random = function random(bytes) {
-  return crypto.getRandomValues(new Uint8Array(bytes));
-};
-var customRandom = exports.customRandom = function customRandom(alphabet, defaultSize, getRandom) {
-  var mask = (2 << Math.log(alphabet.length - 1) / Math.LN2) - 1;
-  var step = -~(1.6 * mask * defaultSize / alphabet.length);
-  return function () {
-    var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSize;
-    var id = '';
-    while (true) {
-      var bytes = getRandom(step);
-      var j = step;
-      while (j--) {
-        id += alphabet[bytes[j] & mask] || '';
-        if (id.length === size) return id;
-      }
-    }
-  };
-};
-var customAlphabet = exports.customAlphabet = function customAlphabet(alphabet) {
-  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 21;
-  return customRandom(alphabet, size, random);
-};
-var nanoid = exports.nanoid = function nanoid() {
-  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 21;
-  var id = '';
-  var bytes = crypto.getRandomValues(new Uint8Array(size));
-  while (size--) {
-    id += _index.urlAlphabet[bytes[size] & 63];
-  }
-  return id;
-};
-},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../dist/src/core/dynamicStyle/generateClass.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.generateClass = void 0;
-var _nanoid = require("nanoid");
-var generateClass = exports.generateClass = function generateClass(tag) {
-  return "__".concat(tag, "__").concat((0, _nanoid.nanoid)(5), " ");
-};
-},{"nanoid":"../node_modules/nanoid/index.browser.js"}],"../dist/src/core/dynamicStyle/insertRule.js":[function(require,module,exports) {
+},{"./render":"../dist/src/core/render/render.js"}],"../dist/src/core/dynamic-style/insert-rule.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -715,21 +704,39 @@ var insertRule = exports.insertRule = function insertRule(className, styles) {
   var styleSheet = document.styleSheets[0];
   if (!styleSheet) {
     var style = (0, _utils.newElement)("style");
-    document.head.appendChild(style), styleSheet = style.sheet;
+    (0, _utils.childAppender)(document.head, style), styleSheet = style.sheet;
   }
   var formattedStyles = styles.replace(/\n/g, "");
   styleSheet.insertRule(".".concat(className, " { ").concat(formattedStyles, " }"), styleSheet.cssRules.length);
 };
-},{"../../utils":"../dist/src/utils/index.js"}],"../dist/src/core/dynamicStyle/createStyle.js":[function(require,module,exports) {
+},{"../../utils":"../dist/src/utils/index.js"}],"../dist/src/utils/random.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ranNum = ranNum;
+function ranNum(length) {
+  if (length <= 0) return 0;
+  var timestamp = Date.now().toString(),
+    timestampLength = timestamp.length;
+  if (length <= timestampLength) return parseInt(timestamp.slice(0, length), 10);
+  var randomPartLength = length - timestampLength,
+    digits = Array(randomPartLength);
+  for (var i = 0; i < randomPartLength; i++) digits[i] = Math.floor(10 * Math.random());
+  var result = timestamp + digits.join("");
+  return length > 16 ? result.slice(0, length) : parseInt(result.slice(0, length), 10);
+}
+},{}],"../dist/src/core/dynamic-style/create-style.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createStyle = void 0;
-var _dom = require("./../dom");
-var _generateClass = require("./generateClass");
-var _insertRule = require("./insertRule");
+var _dom = require("../dom");
+var _insertRule = require("./insert-rule");
+var _random = require("../../utils/random");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -738,15 +745,15 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 var createStyle = exports.createStyle = function createStyle(tag) {
   return function (styles) {
-    var className = (0, _generateClass.generateClass)(tag);
-    return (0, _insertRule.insertRule)(className, styles.join("")), function (props) {
+    var cN = "$__".concat(tag, "__").concat(_random.ranNum);
+    return (0, _insertRule.insertRule)(cN, styles.join("")), function (props) {
       return (0, _dom.createElement)(tag, _objectSpread(_objectSpread({}, props), {}, {
-        class: className
+        class: cN
       }));
     };
   };
 };
-},{"./../dom":"../dist/src/core/dom/index.js","./generateClass":"../dist/src/core/dynamicStyle/generateClass.js","./insertRule":"../dist/src/core/dynamicStyle/insertRule.js"}],"../dist/src/core/dynamicStyle/index.js":[function(require,module,exports) {
+},{"../dom":"../dist/src/core/dom/index.js","./insert-rule":"../dist/src/core/dynamic-style/insert-rule.js","../../utils/random":"../dist/src/utils/random.js"}],"../dist/src/core/dynamic-style/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -758,8 +765,33 @@ Object.defineProperty(exports, "createStyle", {
     return _createStyle.createStyle;
   }
 });
-var _createStyle = require("./createStyle");
-},{"./createStyle":"../dist/src/core/dynamicStyle/createStyle.js"}],"../dist/src/core/widget/Display/Display.js":[function(require,module,exports) {
+var _createStyle = require("./create-style");
+},{"./create-style":"../dist/src/core/dynamic-style/create-style.js"}],"../dist/src/core/reactivity/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "createComputed", {
+  enumerable: true,
+  get: function () {
+    return _signal.createComputed;
+  }
+});
+Object.defineProperty(exports, "createEffect", {
+  enumerable: true,
+  get: function () {
+    return _signal.createEffect;
+  }
+});
+Object.defineProperty(exports, "createSignal", {
+  enumerable: true,
+  get: function () {
+    return _signal.createSignal;
+  }
+});
+var _signal = require("./signal");
+},{"./signal":"../dist/src/core/reactivity/signal/index.js"}],"../dist/src/core/widget/Display/Display.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -810,11 +842,11 @@ Object.defineProperty(exports, "__esModule", {
 Object.defineProperty(exports, "Display", {
   enumerable: true,
   get: function () {
-    return _Display.Display;
+    return _index.Display;
   }
 });
-var _Display = require("./Display");
-},{"./Display":"../dist/src/core/widget/Display/index.js"}],"../dist/src/core/index.js":[function(require,module,exports) {
+var _index = require("./Display/index");
+},{"./Display/index":"../dist/src/core/widget/Display/index.js"}],"../dist/src/core/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -854,44 +886,26 @@ Object.defineProperty(exports, "render", {
 var _alorin = _interopRequireWildcard(require("./dom"));
 exports.alorin = _alorin;
 var _render = require("./render");
-var _dynamicStyle = require("./dynamicStyle");
+var _dynamicStyle = require("./dynamic-style");
 var _reactivity = require("./reactivity");
 var _widget = require("./widget");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-},{"./dom":"../dist/src/core/dom/index.js","./render":"../dist/src/core/render/index.js","./dynamicStyle":"../dist/src/core/dynamicStyle/index.js","./reactivity":"../dist/src/core/reactivity/index.js","./widget":"../dist/src/core/widget/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
+},{"./dom":"../dist/src/core/dom/index.js","./render":"../dist/src/core/render/index.js","./dynamic-style":"../dist/src/core/dynamic-style/index.js","./reactivity":"../dist/src/core/reactivity/index.js","./widget":"../dist/src/core/widget/index.js"}],"../dist/src/test/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: !0
+}), Object.defineProperty(exports, "default", {
+  enumerable: !0,
+  get: function get() {
+    return _default;
+  }
 });
-exports.default = void 0;
-var _core = require("../core");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var _default = exports.default = function _default() {
-  var _createSignal = (0, _core.createSignal)(!1),
-    _createSignal2 = _slicedToArray(_createSignal, 2),
-    show = _createSignal2[0],
-    setShow = _createSignal2[1];
-  (0, _core.createEffect)(function () {
-    return console.log(show());
-  });
-  var customEvent = new CustomEvent("customEvent", {
-    bubbles: !0
-  });
-  return document.dispatchEvent(customEvent), _core.alorin.createElement(_core.alorin.wrapper, null, _core.alorin.createElement("h1", null, "HEY UCKERS!"), show() && _core.alorin.createElement("p", null, "Hey BROS"), _core.alorin.createElement("button", {
-    onclIck: [function () {
-      return console.log("fe");
-    }, function () {
-      return console.log("he");
-    }]
-  }, "Toggle"));
-};
+var _core = require("../core"),
+  _default = function _default() {
+    return _core.alorin.createElement("div", null, _core.alorin.createElement("p", null, "Helldjfkvmkdjfvo!"));
+  };
 },{"../core":"../dist/src/core/index.js"}],"../dist/src/main.js":[function(require,module,exports) {
 "use strict";
 
@@ -924,7 +938,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60729" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52590" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
