@@ -12,7 +12,7 @@ const Styled = createStyle("button")`
 `;
 
 const Button = ({ children }) => {
-    return <Styled>{children}</Styled>;
+	return <Styled>{children}</Styled>;
 };
 
 export default Button;

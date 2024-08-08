@@ -6,10 +6,8 @@
  */
 
 import { attributeHandler } from ".";
-import { createEvent } from "../../event";
 
 export const propsHandler = (elementProps, element) => {
+      console.log(elementProps);
 	if (elementProps) attributeHandler(elementProps, element);
-
-	createEvent(elementProps, element);
 };

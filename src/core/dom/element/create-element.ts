@@ -2,7 +2,7 @@ import { propsHandler } from "./props";
 import { processChildrens } from "./childrens";
 import { isFunc, newElement, newDFrag, childAppender } from "../../../utils";
 import { createEffect } from "../../reactivity";
- 
+
 export const createElement = (tag, props, ...childrens) => {
 	let _props = props || {},
 		fragment = newDFrag(),

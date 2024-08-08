@@ -1,7 +1,6 @@
 import { signalHandler } from "../../signal";
- import { processNestedChildren } from "./";
+import { processNestedChildren } from "./";
 import { isArr, isFunc, isNode, isNUB, newTextNode, childAppender } from "../../../../utils";
-import "../../../../utils/loopers.js";
 
 export const processChildrens = (childrens, fragment) => {
   childrens.forEach(node => {
