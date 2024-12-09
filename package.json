@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"chokidar": "^3.6.0",
-		"nanoid": "^5.0.7"
+		"nanoid": "^5.0.9"
 	},
 	"@parcel/transformer-css": {
 		"cssModules": true
